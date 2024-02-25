@@ -3,6 +3,11 @@
 
 ---
 
+GIT REPO:    https://github.com/Javascript-Final/JS-REACT-APP-FINAL.git
+
+---
+
+
 ## Project Description
 
 
