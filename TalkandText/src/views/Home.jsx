@@ -2,7 +2,10 @@ import React from 'react'
 
 function Home() {
   return (
-    <div>Talk with me !!! or Connecting people</div>
+    <div>
+      <div>HiGuys</div>
+      <img alt="HiGuys app logo" src="../public/madagascar.png" />
+    </div>
   )
 }
 
