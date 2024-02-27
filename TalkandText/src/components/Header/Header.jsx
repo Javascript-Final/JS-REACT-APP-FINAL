@@ -16,7 +16,7 @@ export function Header() {
     useEffect(() => {
       setAvatarUrl(userData?.avatarUrl);
   }, [userData]);
-
+    console.log(userData);
 
     const logoutUser = async () => {
       await logout();
@@ -29,7 +29,7 @@ export function Header() {
         {user 
         ? (
             <>
-            {`Welcome, ${userData.handle}`}
+            {`Welcome, ${userData?.username}`}
             <button onClick={logoutUser}>Logout</button>
             </>
         )
