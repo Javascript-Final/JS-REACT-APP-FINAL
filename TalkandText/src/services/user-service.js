@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo,orderByChild } from "firebase/database";
+import { get, set, ref, query, equalTo,orderByChild, update } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const getUserByHandle = (handle) => {
@@ -13,7 +13,7 @@ export const createUserHandle = (username, firstName, lastName, uid, email, ) =>
       lastName,
       uid,
       email,
-      avatarUrl: "https://static.thenounproject.com/png/989418-200.png",
+      avatarUrl: "https://p7.hiclipart.com/preview/962/225/162/gloria-alex-melman-skipper-madagascar-madagascar.jpg",
     })
 }
 

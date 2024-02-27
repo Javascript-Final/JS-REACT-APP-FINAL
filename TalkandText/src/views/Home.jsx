@@ -4,7 +4,7 @@ function Home() {
   return (
     <div>
       <div>HiGuys</div>
-      <img alt="HiGuys app logo" src="../public/madagascar.png" />
+      <img src="../public/madagascar.png" alt="HiGuys app logo" />
     </div>
   )
 }

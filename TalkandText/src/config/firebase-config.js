@@ -1,12 +1,9 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase } from "firebase/database";
+import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useState, useEffect } from "react";
 
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCL7KFVsZgTksUVfXJshIyQLBBtfm86Rts",
   authDomain: "talk-and-text-app.firebaseapp.com",
@@ -17,9 +14,20 @@ const firebaseConfig = {
   databaseURL: "https://talk-and-text-app-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+export function useAuth() {
+  const [currentUser, setCurrentUser] = useState();
 
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, user => setCurrentUser(user));
+    return unsub;
+  }, [])
+
+  return currentUser;
+}
+
+
+export const auth = getAuth(app);
 export const db = getDatabase(app);
+export const storage = getStorage(app);

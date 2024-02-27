@@ -4,26 +4,32 @@ import { logout } from '../../services/auth-service';
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from '../../context/AppContext'
 
-function Header() {
+export function Header() {
 
-    const { user, setUser } = useContext(AppContext);
-    const { userData } = useContext(AppContext)
+    const { user, setContext } = useContext(AppContext);
+    const { userData } = useContext(AppContext);
+
+    const [avatarUrl, setAvatarUrl] = useState(userData?.avatarUrl);
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+      setAvatarUrl(userData?.avatarUrl);
+  }, [userData]);
+
+
     const logoutUser = async () => {
-      await logout()
-      setUser({ user: null, userData: null })
+      await logout();
+      setContext({ user: null, userData: null })
   }
 
   return (
     <header>
         <NavLink to='/'>Home</NavLink>
-
         {user 
         ? (
             <>
-            {`Welcome, ${user.username}`}
+            {`Welcome, ${userData.handle}`}
             <button onClick={logoutUser}>Logout</button>
             </>
         )
@@ -33,9 +39,6 @@ function Header() {
             <NavLink to='/login'>Login</NavLink>
             </>
         )}
-
     </header>
   )
 }
-
-export default Header
