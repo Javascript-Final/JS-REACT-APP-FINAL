@@ -1,12 +1,20 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { useContext } from 'react'
+import { NavLink, useNavigate } from "react-router-dom"
+import { logout } from '../../services/auth-service'; 
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from '../../context/AppContext'
 
 function Header() {
 
     const { user, setUser } = useContext(AppContext);
+    const { userData } = useContext(AppContext)
 
+    const navigate = useNavigate();
+
+    const logoutUser = async () => {
+      await logout()
+      setUser({ user: null, userData: null })
+  }
 
   return (
     <header>
@@ -16,7 +24,7 @@ function Header() {
         ? (
             <>
             {`Welcome, ${user.username}`}
-            <button onClick={() => setUser(null)}>Logout</button>
+            <button onClick={logoutUser}>Logout</button>
             </>
         )
         : (

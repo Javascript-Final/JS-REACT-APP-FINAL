@@ -3,9 +3,6 @@ import { AppContext } from "../context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginUser } from "../services/auth-service";
 
-
-
-
 export default function Login() {
     const { user, setContext } = useContext(AppContext);
     const [form, setForm] = useState({
@@ -15,8 +12,6 @@ export default function Login() {
 
     const navigate = useNavigate();
     const location = useLocation();
-
-   
 
     const updateForm = prop => e => {
         setForm({...form, [prop]: e.target.value });
@@ -29,7 +24,7 @@ export default function Login() {
     }, [user])
 
     const login = async () => {
-        try{
+        try{    
         const credentials = await loginUser(form.email, form.password)
         setContext({ user: credentials.user, userData: null });
         } catch (error) {
@@ -46,3 +41,4 @@ export default function Login() {
         </div>
     )
 }
+

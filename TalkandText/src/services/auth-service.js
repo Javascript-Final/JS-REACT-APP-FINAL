@@ -9,6 +9,6 @@ export const loginUser = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
 };
 
-export const logOut = () => {
+export const logout = () => {
     return signOut(auth);
 };
