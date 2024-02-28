@@ -13,6 +13,7 @@ export default function Register() {
     lastName: "",
     handle: "",
     email: "",
+    phoneNumber: "",
     password: "",
   });
 
@@ -71,7 +72,8 @@ export default function Register() {
         form.lastName,
         form.handle,
         credentials.user.uid,
-        form.email
+        form.email,
+        form.phoneNumber
       );
 
       setContext({ user, userData: null });
@@ -117,6 +119,15 @@ export default function Register() {
         type="text"
         name="email"
         id="email"
+      />
+      <br />
+      <label htmlFor="phoneNumber" >Phone Number</label>
+      <input
+        value={form.phoneNumber}
+        onChange={updateForm("phoneNumber")}
+        type="tel"
+        name="phoneNumber"
+        id="phoneNumber"
       />
       <br />
       <label htmlFor="password">Password</label>{" "}

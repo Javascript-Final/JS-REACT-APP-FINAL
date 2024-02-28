@@ -5,7 +5,7 @@ export const getUserByHandle = (handle) => {
     return get(ref(db, `users/${handle}`))
 };
 
-export const createUserHandle = async (firstName, lastName, username, uid, email, ) => {
+export const createUserHandle = async (firstName, lastName, username, uid, email, phoneNumber) => {
 
     return await set(ref(db, `users/${username}`), {
       firstName,
@@ -13,6 +13,7 @@ export const createUserHandle = async (firstName, lastName, username, uid, email
       username,
       uid,
       email,
+      phoneNumber,
       avatarUrl: "https://p7.hiclipart.com/preview/962/225/162/gloria-alex-melman-skipper-madagascar-madagascar.jpg",
     })
 }
