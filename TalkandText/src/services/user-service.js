@@ -5,12 +5,12 @@ export const getUserByHandle = (handle) => {
     return get(ref(db, `users/${handle}`))
 };
 
-export const createUserHandle = (username, firstName, lastName, uid, email, ) => {
+export const createUserHandle = async (firstName, lastName, username, uid, email, ) => {
 
-    return set(ref(db, `users/${username}`), {
-      username,
+    return await set(ref(db, `users/${username}`), {
       firstName,
       lastName,
+      username,
       uid,
       email,
       avatarUrl: "https://p7.hiclipart.com/preview/962/225/162/gloria-alex-melman-skipper-madagascar-madagascar.jpg",

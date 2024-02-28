@@ -6,8 +6,8 @@ import { AppContext } from '../../context/AppContext'
 
 export function Header() {
 
-    const { user, setContext } = useContext(AppContext);
-    const { userData } = useContext(AppContext);
+    const { user, userData, setContext } = useContext(AppContext);
+    
 
     const [avatarUrl, setAvatarUrl] = useState(userData?.avatarUrl);
 
@@ -16,7 +16,7 @@ export function Header() {
     useEffect(() => {
       setAvatarUrl(userData?.avatarUrl);
   }, [userData]);
-
+    console.log(userData);
 
     const logoutUser = async () => {
       await logout();
@@ -29,7 +29,7 @@ export function Header() {
         {user 
         ? (
             <>
-            {`Welcome, ${userData.handle}`}
+            {`Welcome, ${userData?.username}`}
             <button onClick={logoutUser}>Logout</button>
             </>
         )

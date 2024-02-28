@@ -23,11 +23,12 @@ function App() {
         .then(snapshot => {
           if (snapshot.exists()) {
             setContext({ user, userData: snapshot.val()[Object.keys(snapshot.val())[0]] });
+            console.log(snapshot.val());
           }
         })
     }
   }, [user]);
-
+  
   return (
     <BrowserRouter>
       <AppContext.Provider value={{ ...context, setContext }}>
