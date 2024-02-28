@@ -9,6 +9,7 @@ import Login from './views/Login';
 import { auth } from './config/firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/user-service';
+import CreateChannel from './views/CreateChannel';
 
 function App() {
   const [context, setContext] = useState({
@@ -37,6 +38,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
+          <Route path= '/create-channel' element={<CreateChannel/>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>

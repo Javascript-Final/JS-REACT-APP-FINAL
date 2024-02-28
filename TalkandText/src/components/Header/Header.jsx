@@ -16,7 +16,7 @@ export function Header() {
     useEffect(() => {
       setAvatarUrl(userData?.avatarUrl);
   }, [userData]);
-    console.log(userData);
+    // console.log(userData);
 
     const logoutUser = async () => {
       await logout();
@@ -30,6 +30,7 @@ export function Header() {
         ? (
             <>
             {`Welcome, ${userData?.username}`}
+            <NavLink to='/create-channel'>Create Channel</NavLink>
             <button onClick={logoutUser}>Logout</button>
             </>
         )
