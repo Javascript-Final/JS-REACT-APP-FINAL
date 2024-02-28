@@ -36,7 +36,7 @@ export default function Login() {
         <div>
      <h1>Login</h1>
      <label htmlFor="email">Email: </label><input value={form.email} onChange={updateForm('email')} type="text" id="email" name="email" /> <br /><br />
-     <label htmlFor="email">Password: </label><input value={form.password} onChange={updateForm('password')} type="text" id="password" name="password" /> <br /><br />
+     <label htmlFor="email">Password: </label><input value={form.password} onChange={updateForm('password')} type="password" id="password" name="password" /> <br /><br />
     <button onClick={login} >Login</button>
         </div>
     )
