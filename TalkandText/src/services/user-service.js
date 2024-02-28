@@ -18,7 +18,7 @@ export const createUserHandle = async (firstName, lastName, username, uid, email
 }
 
 export const getUserData = (uid) => {
-    return get(ref(db, `users`), orderByChild('uid'), equalTo(uid));
+    return get(query(ref(db, `users`), orderByChild('uid'), equalTo(uid)));
 };
 
 export const updateUser = async (username, userData) => {
