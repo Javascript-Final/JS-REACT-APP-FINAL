@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useState, useEffect } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCL7KFVsZgTksUVfXJshIyQLBBtfm86Rts",
@@ -15,18 +14,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
-export function useAuth() {
-  const [currentUser, setCurrentUser] = useState();
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, user => setCurrentUser(user));
-    return unsub;
-  }, [])
-
-  return currentUser;
-}
-
 
 export const auth = getAuth(app);
 export const db = getDatabase(app);
