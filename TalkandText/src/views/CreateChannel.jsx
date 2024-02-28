@@ -19,8 +19,8 @@ export default function CreateChannel() {
   };
 
   const create = async () => {
-    if (form.channelTitle.length < 5 || form.channelTitle.length > 40) {
-      setError("First name must be unique and have between 5 and 35 symbols!");
+    if (form.channelTitle.length < 3 || form.channelTitle.length > 40) {
+      setError("Channel title must be between 3 and 40 characters long!");
       return;
     }
 
