@@ -31,6 +31,7 @@ export function Header() {
             <>
             {`Welcome, ${userData?.username}`}
             <NavLink to='/create-channel'>Create Channel</NavLink>
+            <NavLink to="/profile">Profile</NavLink>
             <button onClick={logoutUser}>Logout</button>
             </>
         )

@@ -10,6 +10,7 @@ import { auth } from './config/firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/user-service';
 import CreateChannel from './views/CreateChannel';
+import { Profile } from './views/Profile';
 
 function App() {
   const [context, setContext] = useState({
@@ -24,7 +25,6 @@ function App() {
         .then(snapshot => {
           if (snapshot.exists()) {
             setContext({ user, userData: snapshot.val()[Object.keys(snapshot.val())[0]] });
-            console.log(snapshot.val());
           }
         })
     }
@@ -39,6 +39,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route path= '/create-channel' element={<CreateChannel/>} />
+          <Route path= '/profile' element={<Profile/>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>
