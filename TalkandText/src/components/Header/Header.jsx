@@ -6,8 +6,8 @@ import { AppContext } from '../../context/AppContext'
 
 export function Header() {
 
-    const { user, setContext } = useContext(AppContext);
-    const { userData } = useContext(AppContext);
+    const { user, userData, setContext } = useContext(AppContext);
+    
 
     const [avatarUrl, setAvatarUrl] = useState(userData?.avatarUrl);
 

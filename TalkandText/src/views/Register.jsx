@@ -85,7 +85,7 @@ export default function Register() {
     <div id="sign-up-view">
       <h1>Register</h1>
       {error && <div id="error">{error}</div>}
-      <label htmlFor="handle">First Name</label>
+      <label htmlFor="firstName">First Name</label>
       <input
         value={form.firstName}
         onChange={updateForm("firstName")}
