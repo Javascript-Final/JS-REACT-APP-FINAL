@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../context/AppContext";
 import { updateUser } from "../services/user-service";
 import { Avatar, Divider, ListItemIcon } from '@mui/material';
+import { getDownloadURL, ref as storageRef, uploadBytes } from "firebase/storage";
+import { storage } from "../config/firebase-config";
 
 export const Profile = () => {
     const { user, userData, setContext } = useContext(AppContext);
@@ -11,22 +13,69 @@ export const Profile = () => {
         lastName: userData?.lastName,
         phoneNumber: userData?.phoneNumber,
     });
+    const [file, setFile] = useState(null)
+
+    useEffect(() => {
+        if (!userData) return;
+        const { firstName, lastName, phoneNumber } = userData
+        if (firstName && lastName && phoneNumber) {
+            setForm({ firstName, lastName, phoneNumber })
+        }
+    }, [user])
 
     const updateForm = (prop) => (e) => {
         setForm({ ...form, [prop]: e.target.value });
     };
 
-    const submit = () => {
-        const updatedUserData = {...userData, ...form}
+    const submit = async () => {
+        const updatedUserData = { ...userData, ...form }
+        if (file) {
+            try {
+                let avatarUrl = userData.avatarUrl;
+                if (file) {
+                    const storageReference = storageRef(storage, `avatars/${userData.uid}`);
+                    await uploadBytes(storageReference, file);
+                    avatarUrl = await getDownloadURL(storageReference);
+                }
+
+                updatedUserData['avatarUrl'] = avatarUrl
+            } catch (error) {
+                console.error('Failed to update user:', error);
+            }
+        }
         updateUser(userData.username, updatedUserData);
-        setContext({user, userData: updatedUserData})
+        setContext({ user, userData: updatedUserData })
         setIsEditing(false);
+    }
+
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
+
+    if (isEditing) {
+
+        if (userData.firstName.length < 4 || userData.firstName.length > 32) {
+            alert('First name must be between 4 and 32 characters.');
+            return;
+        }
+
+        if (userData.lastName.length < 4 || userData.lastName.length > 32) {
+            alert('Last name must be between 4 and 32 characters.');
+            return;
+        }
+
+        if (userData.phoneNumber.length < 9) {
+            alert('Incorrect phone number format.');
+            return;
+        }
+
+
     }
 
     return !isEditing ?
         <>
             <h1>Profile</h1>
-            <Avatar alt="User Avatar" src={userData?.avatarUrl}/>
+            <Avatar alt="User Avatar" src={userData?.avatarUrl} />
             <div>
                 First name: {userData?.firstName}
             </div>
@@ -43,9 +92,9 @@ export const Profile = () => {
         </>
         :
         <>
-         <Avatar alt="User Avatar" src={userData?.avatarUrl}/>
-         <label htmlFor="uploadAvatar">Upload Avatar</label>
-         <button >Browse</button>
+            <Avatar alt="User Avatar" src={userData?.avatarUrl} />
+            <label htmlFor="uploadAvatar">Upload Avatar</label>
+            <input type="file" onChange={handleFileChange} />
             <form>
                 <label htmlFor="firstName">First name</label>
                 <input
