@@ -57,24 +57,12 @@ export const AvatarMenu = ({ open, anchorEl, handleClose }) => {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <MenuItem onClick={() => { navigate('/profile') }}>
-                <Avatar /> Profile
+                <Avatar alt="User Avatar" src={userData?.avatarUrl} /> Profile
             </MenuItem>
             <MenuItem onClick={() => { navigate('/create-channel') }}>
                 <Avatar /> Create channel
             </MenuItem>
             <Divider />
-            {/* <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                    <PersonAdd fontSize="small" />
-                </ListItemIcon>
-                Add another account
-            </MenuItem> */}
-            {/* <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                    <Settings fontSize="small" />
-                </ListItemIcon>
-                Settings
-            </MenuItem> */}
             <MenuItem onClick={logoutUser}>
                 <ListItemIcon>
                     <Logout fontSize="small" />

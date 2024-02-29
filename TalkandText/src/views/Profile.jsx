@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../context/AppContext";
 import { updateUser } from "../services/user-service";
+import { Avatar, Divider, ListItemIcon } from '@mui/material';
 
 export const Profile = () => {
     const { user, userData, setContext } = useContext(AppContext);
@@ -25,24 +26,28 @@ export const Profile = () => {
     return !isEditing ?
         <>
             <h1>Profile</h1>
+            <Avatar alt="User Avatar" src={userData?.avatarUrl}/>
             <div>
-                first name: {userData?.firstName}
+                First name: {userData?.firstName}
             </div>
             <div>
-                last name: {userData?.lastName}
+                Last name: {userData?.lastName}
             </div>
             <div>
-                username: {userData?.username}
+                Username: {userData?.username}
             </div>
             <div>
-                phone number: {userData?.phoneNumber}
+                Phone number: {userData?.phoneNumber}
             </div>
             <button onClick={() => setIsEditing(true)}>Edit Profile</button>
         </>
         :
         <>
+         <Avatar alt="User Avatar" src={userData?.avatarUrl}/>
+         <label htmlFor="uploadAvatar">Upload Avatar</label>
+         <button >Browse</button>
             <form>
-                <label htmlFor="firstName">first name</label>
+                <label htmlFor="firstName">First name</label>
                 <input
                     value={form.firstName}
                     onChange={updateForm("firstName")}
@@ -51,7 +56,7 @@ export const Profile = () => {
                     id="firstName"
                 />
                 <br />
-                <label htmlFor="lastName">last name</label>
+                <label htmlFor="lastName">Last name</label>
                 <input
                     value={form.lastName}
                     onChange={updateForm("lastName")}
@@ -60,7 +65,7 @@ export const Profile = () => {
                     id="lastName"
                 />
                 <br />
-                <label htmlFor="phoneNumber">phone number</label>
+                <label htmlFor="phoneNumber">Phone number</label>
                 <input
                     value={form.phoneNumber}
                     onChange={updateForm("phoneNumber")}
