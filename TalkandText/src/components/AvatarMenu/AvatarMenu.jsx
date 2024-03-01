@@ -7,6 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { logout } from '../../services/auth-service';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
+import GroupsIcon from '@mui/icons-material/Groups';
 
 export const AvatarMenu = ({ open, anchorEl, handleClose }) => {
 
@@ -60,7 +61,7 @@ export const AvatarMenu = ({ open, anchorEl, handleClose }) => {
                 <Avatar alt="User Avatar" src={userData?.avatarUrl} /> Profile
             </MenuItem>
             <MenuItem onClick={() => { navigate('/create-channel') }}>
-                <Avatar /> Create channel
+                <GroupsIcon/> Create a channel
             </MenuItem>
             <Divider />
             <MenuItem onClick={logoutUser}>
