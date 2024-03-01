@@ -16,7 +16,7 @@ export default function Authenticated({ children }) {
   const location = useLocation();
   
   if (!user) {
-    navigate("/login", { state: { from: location } });
+    navigate("/", { state: { from: location } });
   }
 
   return (
