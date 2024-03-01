@@ -11,6 +11,8 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/user-service';
 import CreateChannel from './views/CreateChannel';
 import { Profile } from './views/Profile';
+import SingleTeamView from './views/SingleTeamView';
+import Teams from './views/CreateTeams';
 
 function App() {
   const [context, setContext] = useState({
@@ -39,6 +41,8 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route path= '/create-channel' element={<CreateChannel/>} />
+          <Route path= '/single-team-view' element={<SingleTeamView/>} />
+          <Route path= '/teams' element={<Teams/>} />
           <Route path= '/profile' element={<Profile/>} />
         </Routes>
       </AppContext.Provider>
