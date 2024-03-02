@@ -10,10 +10,11 @@ export const createTeam = async (name, userUid) => {
     const members = {}; // Инициализираме празен обект members, който представлява членовете на екипа.
     members[userUid] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
 
-    await set(ref(db, `teams/${uid}`), { name, owner, members, channels, uid }); // Създаваме нов обект в колекцията 'teams' 
+    await set(ref(db, `teams/${userUid}`), { name, owner, members, channels, uid }); // Създаваме нов обект в колекцията 'teams' 
     // със зададените свойства като name, owner, members, channels и uid.
     await update(ref(db), { [`users/${userUid}/MyTeams/${name}`]: uid }); // Обновяваме информацията за потребителя, като добавяме новия екип 
     // в списъка му с имена на екипите.
+
     return uid; // Връщаме уникалния идентификатор на новосъздадения екип.
   } catch (error) {
     console.error('Error adding team:', error);
@@ -38,7 +39,7 @@ export const checkIfTeamNameExists = async (name) => {
   }
 };
 
-export const getTeamsByUserUids = async (userUids) => { // Функция, която връща екипите, в които са членове подадените потребители.
+export const getTeamsByUserUid = async (userUid) => { // Функция, която връща екипите, в които са членове подадените потребители.
   try {
     const snapshot = await get(ref(db, 'teams')); // Взимаме снимка на колекцията 'teams'.
 
@@ -104,3 +105,24 @@ export const getTeamMembers = async (teamUid) => { // Функция, която
     throw error;
   }
 };
+
+
+export const addTeamMember = async (teamUid, userUid) => { // Функция, която добавя член към екип.
+    try {
+        await update(ref(db, `teams/${teamUid}/members`), { [userUid]: true }); // Обновяваме обекта с членовете на екипа, като добавяме новия член.
+        await update(ref(db, `users/${userUid}/MyTeams`), { [teamUid]: true }); // Обновяваме обекта с екипите на потребителя, като добавяме новия екип.
+    } catch (error) {
+        console.error('Error adding member:', error);
+        throw error;
+    }
+    };
+
+    export const removeTeamMember = async (teamUid, userUid) => { // Функция, която премахва член от екип.
+        try {
+            await update(ref(db, `teams/${teamUid}/members`), { [userUid]: null }); // Обновяваме обекта с членовете на екипа, като премахваме члена.
+            await update(ref(db, `users/${userUid}/MyTeams`), { [teamUid]: null }); // Обновяваме обекта с екипите на потребителя, като премахваме екипа.
+        } catch (error) {
+            console.error('Error removing member:', error);
+            throw error;
+        }
+    }
