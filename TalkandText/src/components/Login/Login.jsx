@@ -82,7 +82,7 @@ export default function Login({ switchComponent }) {
                         onClick={login}
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Sign In
+                        Log In
                     </Button>
                     <Box display="flex"
                         justifyContent="center"
