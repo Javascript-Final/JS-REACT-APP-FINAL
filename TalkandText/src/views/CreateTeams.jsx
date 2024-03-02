@@ -15,9 +15,10 @@ function CreateTeams() {
   const handleCreateTeam = async () => {
     try {
       const newTeam = await createTeam(teamName, userData.uid);
-      // Do something with the newly created team, e.g. navigate to the team page
-      navigate(`/createteams/${newTeam.uid}`);
-      debbuger
+      const teamsRef = ref(db, 'teams/'); // Взимаме референция към колекцията 'teams'.
+      
+     
+      navigate(`/single-team-view`);
     } catch (error) {
       console.error('Error creating team:', error);
     }

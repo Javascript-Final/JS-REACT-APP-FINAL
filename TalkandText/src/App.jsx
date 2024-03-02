@@ -12,7 +12,8 @@ import { getUserData } from './services/user-service';
 import CreateChannel from './views/CreateChannel';
 import { Profile } from './views/Profile';
 import SingleTeamView from './views/SingleTeamView';
-import Teams from './views/CreateTeams';
+import CreateTeams from './views/CreateTeams';
+import Authenticated from './hoc/Authenticated'
 
 function App() {
   const [context, setContext] = useState({
@@ -39,10 +40,14 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path= '/create-channel' element={<CreateChannel/>} />
+         {/*  <Route path= '/create-channel' element={<CreateChannel/>} />
           <Route path= '/single-team-view' element={<SingleTeamView/>} />
-          <Route path= '/teams' element={<Teams/>} />
-          <Route path= '/profile' element={<Profile/>} />
+          <Route path= '/createteams' element={<CreateTeams/>} />
+          <Route path= '/profile' element={<Profile/>} /> */}
+            <Route path= '/create-channel' element={<Authenticated><Header /><CreateChannel/></Authenticated>} />
+           <Route path= '/single-team-view' element={<Authenticated><Header /><SingleTeamView/></Authenticated>} />
+           <Route path= '/createteams' element={<Authenticated><Header /><CreateTeams/></Authenticated>} />
+           <Route path= '/profile' element={<Authenticated><Header /><Profile/></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>
