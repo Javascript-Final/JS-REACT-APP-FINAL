@@ -16,7 +16,8 @@ function CreateTeams() {
     try {
       const newTeam = await createTeam(teamName, userData.uid);
       // Do something with the newly created team, e.g. navigate to the team page
-      navigate(`/teams/${newTeam.uid}`);
+      navigate(`/createteams/${newTeam.uid}`);
+      debbuger
     } catch (error) {
       console.error('Error creating team:', error);
     }
@@ -92,7 +93,7 @@ export default CreateTeams;
                   style={{ background: '#495164' }}
                 >
                   <div className="text-l font-bold tracking-tight text-gray-50 dark:text-white pr-16">
-                    {team.name}
+  || {})                   {team.name}
                   </div>
 
                   <p className="text-sm text-gray-400">

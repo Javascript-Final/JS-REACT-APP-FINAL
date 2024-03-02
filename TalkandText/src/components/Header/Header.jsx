@@ -37,6 +37,7 @@ export function Header() {
   return (
     <header>
       <NavLink to='/'>Home</NavLink>
+      <NavLink to='/createteams'>Create Teams</NavLink>
       {user
         ? (
           <>

@@ -14,7 +14,6 @@ export const createTeam = async (name, userUid) => {
     // със зададените свойства като name, owner, members, channels и uid.
     await update(ref(db), { [`users/${userUid}/MyTeams/${name}`]: uid }); // Обновяваме информацията за потребителя, като добавяме новия екип 
     // в списъка му с имена на екипите.
-    debugger
     return uid; // Връщаме уникалния идентификатор на новосъздадения екип.
   } catch (error) {
     console.error('Error adding team:', error);
@@ -39,7 +38,7 @@ export const checkIfTeamNameExists = async (name) => {
   }
 };
 
-export const getTeamsByUserUid = async (userUid) => { // Функция, която връща екипите, в които са членове подадените потребители.
+export const getTeamsByUserUids = async (userUids) => { // Функция, която връща екипите, в които са членове подадените потребители.
   try {
     const snapshot = await get(ref(db, 'teams')); // Взимаме снимка на колекцията 'teams'.
 

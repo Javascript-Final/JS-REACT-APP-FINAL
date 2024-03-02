@@ -13,6 +13,7 @@ import CreateChannel from './views/CreateChannel';
 import { Profile } from './views/Profile';
 import SingleTeamView from './views/SingleTeamView';
 import Teams from './views/CreateTeams';
+import CreateTeams from './views/CreateTeams';
 
 function App() {
   const [context, setContext] = useState({
@@ -42,7 +43,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path= '/create-channel' element={<CreateChannel/>} />
           <Route path= '/single-team-view' element={<SingleTeamView/>} />
-          <Route path= '/teams' element={<Teams/>} />
+          <Route path= '/createteams' element={<CreateTeams/>} />
           <Route path= '/profile' element={<Profile/>} />
         </Routes>
       </AppContext.Provider>
