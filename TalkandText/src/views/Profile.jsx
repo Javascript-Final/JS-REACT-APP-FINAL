@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../context/AppContext";
 import { updateUser } from "../services/user-service";
-import { Avatar, Divider, ListItemIcon } from '@mui/material';
+import { Avatar, Divider, ListItemIcon, Typography, Grid, Paper, Container, Box, TextField, Button, Hidden } from '@mui/material';
 import { getDownloadURL, ref as storageRef, uploadBytes } from "firebase/storage";
 import { storage } from "../config/firebase-config";
 
@@ -72,58 +72,103 @@ export const Profile = () => {
 
     }
 
-    return !isEditing ?
-        <>
-            <h1>Profile</h1>
-            <Avatar alt="User Avatar" src={userData?.avatarUrl} />
-            <div>
-                First name: {userData?.firstName}
-            </div>
-            <div>
-                Last name: {userData?.lastName}
-            </div>
-            <div>
-                Username: {userData?.username}
-            </div>
-            <div>
-                Phone number: {userData?.phoneNumber}
-            </div>
-            <button onClick={() => setIsEditing(true)}>Edit Profile</button>
-        </>
-        :
-        <>
-            <Avatar alt="User Avatar" src={userData?.avatarUrl} />
-            <label htmlFor="uploadAvatar">Upload Avatar</label>
-            <input type="file" onChange={handleFileChange} />
-            <form>
-                <label htmlFor="firstName">First name</label>
-                <input
-                    value={form.firstName}
-                    onChange={updateForm("firstName")}
-                    type="text"
-                    name="firstName"
-                    id="firstName"
-                />
-                <br />
-                <label htmlFor="lastName">Last name</label>
-                <input
-                    value={form.lastName}
-                    onChange={updateForm("lastName")}
-                    type="text"
-                    name="lastName"
-                    id="lastName"
-                />
-                <br />
-                <label htmlFor="phoneNumber">Phone number</label>
-                <input
-                    value={form.phoneNumber}
-                    onChange={updateForm("phoneNumber")}
-                    type="tel"
-                    name="phoneNumber"
-                    id="phoneNumber"
-                />
-                <br />
-            </form>
-            <button onClick={submit}>Save</button>
-        </>
+    return (
+        <Container sx={{ mt: 6 }}>
+
+            <Grid container spacing={6}>
+                <Grid item xs={3}>
+                    {/* <Paper> */}
+                    <Avatar p={2} sx={{ height: '220px', width: '220px', background: "rgb(240, 240, 240)" }} alt="User Avatar" src={userData?.avatarUrl} />
+                    {/* <Box p={2} textAlign={"center"} alignContent={"center"}>
+                            <Typography component={"h1"} variant="h3">
+                                Profile
+                            </Typography>
+                        </Box>
+                        <Box p={2} justifyContent={"all"}>
+                            
+                        </Box> */}
+                    {/* </Paper> */}
+                </Grid>
+                <Grid item xs={9}>
+                    <Paper>
+                        {/* <Typography> First name: {userData?.firstName} </Typography> */}
+                        <Grid container p={3}>
+                            <Grid item xs={6} p={2}>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    id="firstName"
+                                    label="First Name"
+                                    defaultValue={userData?.firstName}
+                                    fullWidth
+                                    disabled={!isEditing}
+                                    onChange={updateForm('firstName')}
+                                />
+                            </Grid>
+                            <Grid item xs={6} p={2}>
+                            <TextField
+                                    margin="normal"
+                                    required
+                                    id="lastName"
+                                    label="Last Name"
+                                    name="lastName"
+                                    defaultValue={userData?.lastName}
+                                    disabled={!isEditing}
+                                    fullWidth
+                                    onChange={updateForm('lastName')}
+                                />
+                            </Grid>
+                            <Grid item xs={12} p={2}>
+                            <TextField
+                                    margin="normal"
+                                    required
+                                    id="email"
+                                    label="Email"
+                                    name="email"
+                                    defaultValue={userData?.email}
+                                    disabled={true}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={12} p={2}>
+                            <TextField
+                                    margin="normal"
+                                    required
+                                    id="handle"
+                                    label="Handle"
+                                    name="handle"
+                                    defaultValue={userData?.username}
+                                    disabled={true}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={12} p={2}>
+                            <TextField
+                                    margin="normal"
+                                    required
+                                    id="phoneNumber"
+                                    label="Phone Number"
+                                    name="phoneNumber"
+                                    defaultValue={userData?.phoneNumber}
+                                    disabled={!isEditing}
+                                    fullWidth
+                                    onChange={updateForm('phoneNumber')}
+                                />
+                            </Grid>
+                            <Grid item xs={12} p={2}>
+                                {!isEditing && <Button color="primary" onClick={() => setIsEditing(true)}>Edit Profile</Button>}
+                                {isEditing && <Button color="primary" onClick={submit}>Save</Button>}
+                                {isEditing && <Button color="primary" onClick={() => document.getElementById("avatar-input").click()}>
+                                    Upload Avatar
+                                </Button>}
+                                <input type="file" name="avatar" id="avatar-input" style={{"display": "none"}} onChange={handleFileChange} />
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+            </Grid>
+
+
+        </Container>
+        )
 }
