@@ -60,8 +60,8 @@ export const AvatarMenu = ({ open, anchorEl, handleClose }) => {
             <MenuItem onClick={() => { navigate('/profile') }}>
                 <Avatar alt="User Avatar" src={userData?.avatarUrl} /> Profile
             </MenuItem>
-            <MenuItem onClick={() => { navigate('/create-channel') }}>
-                <GroupsIcon/> Create a channel
+            <MenuItem onClick={() => { navigate('/create-teams') }}>
+                <GroupsIcon/> Create a team
             </MenuItem>
             <Divider />
             <MenuItem onClick={logoutUser}>

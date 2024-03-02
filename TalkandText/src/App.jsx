@@ -14,6 +14,7 @@ import { Profile } from './views/Profile';
 import SingleTeamView from './views/SingleTeamView';
 import CreateTeams from './views/CreateTeams';
 import Authenticated from './hoc/Authenticated'
+import Teams from './views/Teams';
 
 function App() {
   const [context, setContext] = useState({
@@ -46,8 +47,9 @@ function App() {
           <Route path= '/profile' element={<Profile/>} /> */}
             <Route path= '/create-channel' element={<Authenticated><Header /><CreateChannel/></Authenticated>} />
            <Route path= '/single-team-view' element={<Authenticated><Header /><SingleTeamView/></Authenticated>} />
-           <Route path= '/createteams' element={<Authenticated><Header /><CreateTeams/></Authenticated>} />
+           <Route path= '/create-teams' element={<Authenticated><Header /><CreateTeams/></Authenticated>} />
            <Route path= '/profile' element={<Authenticated><Header /><Profile/></Authenticated>} />
+           <Route path= '/teams' element={<Authenticated><Header /><Teams/></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>

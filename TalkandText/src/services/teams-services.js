@@ -10,7 +10,7 @@ export const createTeam = async (name, userUid) => {
     const members = {}; // Инициализираме празен обект members, който представлява членовете на екипа.
     members[userUid] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
 
-    await set(ref(db, `teams/${userUid}`), { name, owner, members, channels, uid }); // Създаваме нов обект в колекцията 'teams' 
+    await set(ref(db, `teams/${uid}`), { name, owner, members, channels, uid }); // Създаваме нов обект в колекцията 'teams' 
     // със зададените свойства като name, owner, members, channels и uid.
     await update(ref(db), { [`users/${userUid}/MyTeams/${name}`]: uid }); // Обновяваме информацията за потребителя, като добавяме новия екип 
     // в списъка му с имена на екипите.
