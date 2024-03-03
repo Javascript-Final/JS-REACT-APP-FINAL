@@ -10,12 +10,11 @@ export default function Teams({}) {
   
   return (
     <div>
-      <h2>Teams Component</h2>
       {teamData && (
         <div>
-          <p>Created Team:</p>
+          <p>Teams:</p>
           <p>Name: {teamData.name}</p>
-          <p>Name: {teamData.owner}</p>
+          <p>Add member</p>
          <CreateChannel />
         </div>
       )}
