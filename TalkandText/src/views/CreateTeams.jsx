@@ -38,7 +38,7 @@ function CreateTeams() {
         onChange={(e) => setTeamName(e.target.value)}
         placeholder="Enter team name"
       />
-      <button onClick={handleCreateTeam}>Create Team</button>
+      <button className='create-team-btn' onClick={handleCreateTeam}>Create Team</button>
     </div>
   );
 }

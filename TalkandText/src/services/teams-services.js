@@ -7,7 +7,7 @@ export const createTeam = async (name, userUid) => {
     const uid = result.key;// Взимаме уникален идентификатор (uid) на новосъздадения елемент
     const owner = userUid;// Задаваме стойността на owner с текущия потребител (userUid).
     const channels = {}; // Инициализираме празен обект channels, който представлява канали за екипа.
-    const members = {}; // Инициализираме празен обект members, който представлява членовете на екипа.
+    const members = []; // Инициализираме празен обект members, който представлява членовете на екипа.
     members[userUid] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
 
     await set(ref(db, `teams/${uid}`), { name, owner, members, channels, uid }); // Създаваме нов обект в колекцията 'teams' 
@@ -126,3 +126,23 @@ export const addTeamMember = async (teamUid, userUid) => { // Функция, к
             throw error;
         }
     }
+
+
+    export const addJuryToContest = async (username, contestId) => {
+      const snapshot = await get(ref(db, `contests/${contestId}/jury/${username}`));
+      if (!snapshot.exists()) {
+          // await push(ref(db, `contests/${contestId}/jury/${username}`), true)
+          // await push(ref(db, `users/${username}/jury/${contestId}`), true)
+          await update(ref(db), {
+              [`contests/${contestId}/jury/${username}`]: true,
+              [`users/${username}/jury/${contestId}`]: true,
+          });
+          return true;
+      } else {
+          await update(ref(db), {
+              [`contests/${contestId}/jury/${username}`]: null,
+              [`users/${username}/jury/${contestId}`]: null,
+          });
+          return false;
+      }
+  };
