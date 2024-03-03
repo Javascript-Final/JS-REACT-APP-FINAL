@@ -49,7 +49,7 @@ function App() {
            <Route path= '/single-team-view' element={<Authenticated><Header /><SingleTeamView/></Authenticated>} />
            <Route path= '/create-teams' element={<Authenticated><Header /><CreateTeams/></Authenticated>} />
            <Route path= '/profile' element={<Authenticated><Header /><Profile/></Authenticated>} />
-           <Route path= '/teams' element={<Authenticated><Header /><Teams/></Authenticated>} />
+           <Route path= '/teams/' element={<Authenticated><Header /><Teams/></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>

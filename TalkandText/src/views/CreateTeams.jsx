@@ -1,28 +1,34 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
-import { createTeam } from '../services/teams-services';
-import { get, set, ref, update, push, remove } from 'firebase/database';
-import { db } from '../config/firebase-config';
+import { createTeam, getTeamsByUid } from '../services/teams-services';
+// import Teams from './Teams';
 
 
 function CreateTeams() {
   const [teamName, setTeamName] = useState('');
   const navigate = useNavigate();
-  const { userData } = useContext(AppContext);
+   const { userData } = useContext(AppContext);
 
+  
 
   const handleCreateTeam = async () => {
     try {
       const newTeam = await createTeam(teamName, userData.uid);
       // const teamsRef = ref(db, 'teams/'); // Взимаме референция към колекцията 'teams'.
+      const teamData = await getTeamsByUid(newTeam);
+      console.log(teamData);
+  
+      navigate(`/teams`, { state: { teamData } });
       
-     console.log(newTeam);
-      navigate(`teams/single-team-view`);
+
     } catch (error) {
       console.error('Error creating team:', error);
     }
+    
   };
+
+  
 
   return (
     <div>
