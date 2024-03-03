@@ -6,7 +6,8 @@ import { AppContext } from "../context/AppContext";
 
 export default function CreateChannel() {
   const [form, setForm] = useState({
-    channelTitle: ""
+    channelTitle: "",
+    channelPrivacy: "public",
   });
   const {userData} = useContext(AppContext);
 
@@ -26,7 +27,7 @@ export default function CreateChannel() {
 
     try {
       const username = userData?.username;
-      await createChannel(form.channelTitle, username);
+      await createChannel(form.channelTitle, form.channelPrivacy, username);
       console.log(`Channel ${form.channelTitle} created! You are the first participant!`)
       navigate("/");
     } catch (error) {
@@ -38,7 +39,7 @@ export default function CreateChannel() {
     <div id="create-channel-view">
       <h1>Create channel</h1>
       {error && <div id="error">{error}</div>}
-      <label htmlFor="channelTitle">Channel Title</label>
+      <label htmlFor="channelTitle">Channel Title:</label>
       {" "}
       <input
         value={form.channelTitle}
@@ -47,7 +48,28 @@ export default function CreateChannel() {
         name="channelTitle"
         id="channelTitle"
       />
-     {" "}
+      {" "}
+      <br /> <br />
+      <label htmlFor="channelPrivacy">Privacy:</label>
+      {" "}
+      <input
+        type="radio"
+        name="channelPrivacy"
+        value="public"
+        checked={form.channelPrivacy === "public"}
+        onChange={updateForm("channelPrivacy")}
+      />
+      Public
+      {" "}
+      <input
+        type="radio"
+        name="channelPrivacy"
+        value="private"
+        checked={form.channelPrivacy === "private"}
+        onChange={updateForm("channelPrivacy")}
+      />
+      Private
+      {" "}
       <br /> <br />
       <button onClick={create}>Create</button>
     </div>

@@ -1,21 +1,27 @@
-import { get, ref, equalTo,orderByChild, update, push } from "firebase/database";
+import { get, set, ref, equalTo,orderByChild, update, push } from "firebase/database";
 import { db } from "../config/firebase-config";
 
-// export const getChannelByTitle = (handle) => {
-//     return get(ref(db, `channels/${handle}`))
-// };
+export const getChannelByCid = (cid) => {
+    return get(ref(db, `channels/${cid}`))
+};
 
-export const createChannel = async (channelTitle, username) => {
-    const result = ref(db, `channels`);
-    return await push(result, {
-            channelTitle: channelTitle,
-            participants: [username]
-        });
-}
+export const createChannel = async (channelTitle, channelPrivacy, username) => {
+    try {
+        const result = await push(ref(db, 'channels'), {}); // Create a new object in the 'channels' collection with empty content and get the result of the operation.
+        const cid = result.key; // Get the unique identifier (cid) of the newly created element.
+        const participants = [username]; 
 
-// export const getChannelData = (cid) => {
-//     return get(ref(db, `channels`), orderByChild('cid'), equalTo(cid));
-// };
+        await set(ref(db, `channels/${cid}`), { channelTitle, channelPrivacy, participants, cid });
+        return cid; 
+    } catch (error) {
+        console.error('Error adding channel:', error);
+        throw error;
+    }
+};
+
+export const getChannelParticipants = (cid) => {
+    return get(query(db, `channels/${cid}/participants`))
+};
 
 // export const updateChannel = async (channelTitle, channelId) => {
 
