@@ -12,6 +12,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { SearchBar } from '../SearchBar/SearchBar';
 
 export function Header() {
 
@@ -35,46 +36,6 @@ export function Header() {
     setAvatarUrl(userData?.avatarUrl);
   }, [userData]);
 
-  const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  }));
-
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '20ch',
-      },
-    },
-  }));
-
 
   return (
     <>
@@ -90,15 +51,7 @@ export function Header() {
             >
               HiGuys
             </Typography>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </Search>
+            <SearchBar />
             <Box sx={{ flexGrow: 1 }} />
             <StyledBadge
               overlap="circular"
@@ -117,33 +70,3 @@ export function Header() {
     </>
   )
 }
-
-
-// <header>
-//         <NavLink to='/'>Home</NavLink>
-//         {/* <NavLink to='/createteams'>Create Teams</NavLink> */}
-//         {user
-//           ? (
-//             <>
-//               {`Welcome, ${userData?.username}`}
-//               {/* <NavLink to='/create-channel'>Create Channel</NavLink> */}
-//               <StyledBadge
-//                 overlap="circular"
-//                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-//                 onClick={handleClick}
-//                 variant="dot"
-//               >
-//                 <Avatar alt="User Avatar" src={userData?.avatarUrl} />
-//               </StyledBadge>
-//               <AvatarMenu open={open} anchorEl={anchorEl} handleClose={handleClose} />
-//               {/* <NavLink to="/profile">Profile</NavLink> */}
-//               {/* <button onClick={logoutUser}>Logout</button> */}
-//             </>
-//           )
-//           : (
-//             <>
-//               <NavLink to='/register'>Register</NavLink>
-//               <NavLink to='/login'>Login</NavLink>
-//             </>
-//           )}
-//       </header>
