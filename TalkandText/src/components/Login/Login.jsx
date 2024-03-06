@@ -22,8 +22,8 @@ export default function Login({ switchComponent }) {
 
     useEffect(() => {
         if (user) {
-            // navigate(location.state?.from.pathname || '/profile');
-            navigate('/profile');
+            navigate(location.state?.from.pathname || '/profile');
+            //navigate('/profile');
         }
     }, [user])
 

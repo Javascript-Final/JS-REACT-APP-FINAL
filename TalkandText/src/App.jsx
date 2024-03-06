@@ -15,6 +15,7 @@ import SingleTeamView from './views/SingleTeamView';
 import CreateTeams from './views/CreateTeams';
 import Authenticated from './hoc/Authenticated'
 import Teams from './views/Teams';
+import { SingleUserProfileView } from './views/SingleUserProfileView';
 
 function App() {
   const [context, setContext] = useState({
@@ -33,7 +34,7 @@ function App() {
         })
     }
   }, [user]);
-  
+
   return (
     <BrowserRouter>
       <AppContext.Provider value={{ ...context, setContext }}>
@@ -41,15 +42,12 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-         {/*  <Route path= '/create-channel' element={<CreateChannel/>} />
-          <Route path= '/single-team-view' element={<SingleTeamView/>} />
-          <Route path= '/createteams' element={<CreateTeams/>} />
-          <Route path= '/profile' element={<Profile/>} /> */}
-            <Route path= '/create-channel' element={<Authenticated><Header /><CreateChannel/></Authenticated>} />
-           <Route path= '/single-team-view' element={<Authenticated><Header /><SingleTeamView/></Authenticated>} />
-           <Route path= '/create-teams' element={<Authenticated><Header /><CreateTeams/></Authenticated>} />
-           <Route path= '/profile' element={<Authenticated><Header /><Profile/></Authenticated>} />
-           <Route path= '/teams/' element={<Authenticated><Header /><Teams/></Authenticated>} />
+          <Route path='/create-channel' element={<Authenticated><Header /><CreateChannel /></Authenticated>} />
+          <Route path='/single-team-view' element={<Authenticated><Header /><SingleTeamView /></Authenticated>} />
+          <Route path='/single-profile-view/:uid' element={<Authenticated><Header /><SingleUserProfileView /></Authenticated>} />
+          <Route path='/create-teams' element={<Authenticated><Header /><CreateTeams /></Authenticated>} />
+          <Route path='/profile' element={<Authenticated><Header /><Profile /></Authenticated>} />
+          <Route path='/teams/' element={<Authenticated><Header /><Teams /></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>

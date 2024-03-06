@@ -6,10 +6,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import { getAllUsers } from '../../services/user-service';
 import { getAllChannels } from '../../services/channel-service';
 import { getAllTeams } from '../../services/teams-services';
+import { useNavigate } from 'react-router-dom';
 
-
-const SearchItem = ({ type, content }) => {
-
+const SearchItem = ({ type, content, destination }) => {
+    const navigate = useNavigate();
     const switchColor = (type) => {
 
         switch (type) {
@@ -21,7 +21,7 @@ const SearchItem = ({ type, content }) => {
     }
 
     return (
-        <MenuItem>
+        <MenuItem onClick={() => {navigate(destination)}}>
             <Chip label={type} color={switchColor(type)} sx={{ marginRight: "10px" }} />
             {content}
         </MenuItem>
@@ -40,8 +40,12 @@ export function SearchBar() {
 
     const searchFor = (inputContent) => {
         const users = allUsers
-            .filter((user) => user.firstName.includes(inputContent) || user.lastName.includes(inputContent) || user.username.includes(inputContent) || `${user.firstName} ${user.lastName}`.includes(inputContent))
-            .map((user) => { return { type: "user", content: `${user.firstName} ${user.lastName}` } });
+            .filter((user) => user?.firstName?.includes(inputContent) || user?.lastName?.includes(inputContent) || user?.username?.includes(inputContent) || `${user.firstName} ${user.lastName}`.includes(inputContent))
+            .map((user) => { return { 
+                type: "user",
+                content: `${user.firstName} ${user.lastName}`,
+                destination: `../single-profile-view/${user.uid}` 
+            } });
 
         const teams = allTeams
             .filter((team) => team.name.includes(inputContent))
@@ -157,12 +161,12 @@ export function SearchBar() {
                     currentResult.map((searchItem) => {
                         return <SearchItem type={searchItem.type}
                             content={searchItem.content}
-                            key={`${searchItem.type}-${searchItem.content}`} />
+                            key={`${searchItem.type}-${searchItem.content}`}
+                            destination={searchItem?.destination} />
                     })}
             </Menu>
         </>
     )
 }
 
-
-// return 
+ 
