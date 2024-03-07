@@ -18,7 +18,7 @@ export const createTeam = async (name, userUid) => {
 
     await set(ref(db, `teams/${name}`), { name, owner, members, channels, tid }); // Създаваме нов обект в колекцията 'teams' 
     // със зададените свойства като name, owner, members, channels и uid.
-    await update(ref(db), { [`users/${owner}/teams/${name}`]: { name, owner, members, channels, tid } }); // Обновяваме информацията за потребителя, като добавяме новия екип 
+    await update(ref(db), { [`users/${owner}/teams/${name}`]: { owner, members, channels, tid } }); // Обновяваме информацията за потребителя, като добавяме новия екип 
     // в списъка му с имена на екипите.
 
     return tid; // Връщаме уникалния идентификатор на новосъздадения екип.
