@@ -39,6 +39,7 @@ export function SearchBar() {
     const [searchResult, setSearchResults] = useState([])
 
     const searchFor = (inputContent) => {
+        
         const users = allUsers
             .filter((user) => user?.firstName?.includes(inputContent) || user?.lastName?.includes(inputContent) || user?.username?.includes(inputContent) || `${user.firstName} ${user.lastName}`.includes(inputContent))
             .map((user) => { return { 
@@ -52,7 +53,7 @@ export function SearchBar() {
             .map((team) => { return {type: "team", content: `${team.name}`}}); 
 
         const channels = allChannels
-            .filter((channel) => channel.channelTitle.includes(inputContent))
+            .filter((channel) => channel?.channelTitle?.includes(inputContent))
             .map((channel) => { return { type: "channel", content: `${channel.channelTitle}`}})
 
         setCurrentResult([...users, ...teams, ...channels]);

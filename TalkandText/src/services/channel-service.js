@@ -11,7 +11,7 @@ export const createChannel = async (channelTitle, channelPrivacy, username) => {
         const cid = result.key; // Get the unique identifier (cid) of the newly created element.
         const participants = [username]; 
 
-        await set(ref(db, `channels/${channelTitle}`), { channelPrivacy, participants, cid });
+        await set(ref(db, `channels/${cid}`), { channelTitle, channelPrivacy, participants, cid });
         return cid; 
     } catch (error) {
         console.error('Error adding channel:', error);
