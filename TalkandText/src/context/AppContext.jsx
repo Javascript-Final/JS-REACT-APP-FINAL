@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
 export const AppContext = createContext({
     user: null,
@@ -6,3 +6,7 @@ export const AppContext = createContext({
     teams: [],
     setContext: () => {},
 });
+
+export const useAppContext = () => {
+    return useContext(AppContext);
+};
