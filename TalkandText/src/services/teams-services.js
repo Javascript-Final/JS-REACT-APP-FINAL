@@ -16,9 +16,9 @@ export const createTeam = async (name, userUid) => {
     // members[user.username] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
     members.push(user.username);
 
-    await set(ref(db, `teams/${name}`), { name, owner, members, channels, tid }); // Създаваме нов обект в колекцията 'teams' 
+    await set(ref(db, `teams/${tid}`), { name, owner, members, channels, tid }); // Създаваме нов обект в колекцията 'teams' 
     // със зададените свойства като name, owner, members, channels и uid.
-    await update(ref(db), { [`users/${owner}/teams/${name}`]: { owner, members, channels, tid } }); // Обновяваме информацията за потребителя, като добавяме новия екип 
+    await update(ref(db), { [`users/${owner}/teams/`]:  [...(user?.teams || []), tid ] }); // Обновяваме информацията за потребителя, като добавяме новия екип 
     // в списъка му с имена на екипите.
 
     return tid; // Връщаме уникалния идентификатор на новосъздадения екип.
@@ -39,7 +39,7 @@ export const checkIfTeamNameExists = async (name) => {
     }
 
     return false; // Връщаме false, ако няма екипове в колекцията.
-  } catch (error) { 
+  } catch (error) {
     console.error('Error checking if team name exists:', error.message);
     throw new Error('Error checking if team name exists');
   }
@@ -75,7 +75,7 @@ export const getAllTeams = async () => { // Функция, която връщ�
 
     return teamsArray; // Връщаме масива с екипите.
   } catch (error) {
-    console.error('Error fetching teams:', error); 
+    console.error('Error fetching teams:', error);
     throw error;
   }
 };
@@ -134,25 +134,25 @@ export const getTeamMembers = async (teamUid) => { // Функция, която
     } */
 
 
-    export const addMember = async (username, teamName) => {
-      const user = await getUserByHandle(username);
-      const snapshot = await get(ref(db, `teams/${teamName}/members/${username}`));
-      if (!snapshot.exists()) {
-          // await push(ref(db, `contests/${contestId}/jury/${username}`), true)
-          // await push(ref(db, `users/${username}/jury/${contestId}`), true)
-          console.log(username);
-          
-          console.log(user.username);
-          await update(ref(db), {
-              [`teams/${teamName}/members/${username}`]: true,
-              [`users/${username}/teams/${teamName}`]: true,
-          });
-          return true;
-      } else {
-          await update(ref(db), {
-              [`teams/${teamName}/members/${username}`]: null,
-              [`users/${username}/teams/${teamName}`]: null,
-          });
-          return false;
-      }
-  };
+export const addMember = async (username, teamName) => {
+  const user = await getUserByHandle(username);
+  const snapshot = await get(ref(db, `teams/${teamName}/members/${username}`));
+  if (!snapshot.exists()) {
+    // await push(ref(db, `contests/${contestId}/jury/${username}`), true)
+    // await push(ref(db, `users/${username}/jury/${contestId}`), true)
+    console.log(username);
+
+    console.log(user.username);
+    await update(ref(db), {
+      [`teams/${teamName}/members/${username}`]: true,
+      [`users/${username}/teams/${teamName}`]: true,
+    });
+    return true;
+  } else {
+    await update(ref(db), {
+      [`teams/${teamName}/members/${username}`]: null,
+      [`users/${username}/teams/${teamName}`]: null,
+    });
+    return false;
+  }
+};
