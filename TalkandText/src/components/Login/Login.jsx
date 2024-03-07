@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/auth-service";
 import { Grid, Avatar, Typography, Box, Paper, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { getUserData } from "../../services/user-service";
 
 export default function Login({ switchComponent }) {
     const { user, setContext } = useContext(AppContext);
@@ -21,15 +22,17 @@ export default function Login({ switchComponent }) {
 
     useEffect(() => {
         if (user) {
-            // navigate(location.state?.from.pathname || '/profile');
-            navigate('/profile');
+            navigate(location.state?.from.pathname || '/profile');
+            //navigate('/profile');
         }
     }, [user])
 
     const login = async () => {
         try {
-            const credentials = await loginUser(form.email, form.password)
-            setContext({ user: credentials.user, userData: null });
+            const credentials = await loginUser(form.email, form.password);
+            const snapshot = await getUserData(credentials.user.uid);
+            const userData = snapshot.val()[Object.keys(snapshot.val())[0]];
+            setContext({ user: credentials.user, userData: userData });
         } catch (error) {
             console.log(error);
         }

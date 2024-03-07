@@ -18,6 +18,11 @@ export const createUserHandle = async (firstName, lastName, username, uid, email
     })
 };
 
+export const getUserByUid = async (uid) => {
+  const userSnapshot = await get(query(ref(db, `users`), orderByChild('uid'), equalTo(uid)))
+  return userSnapshot.val()[Object.keys(userSnapshot.val())[0]]
+}
+
 export const getUserData = (uid) => {
     return get(query(ref(db, `users`), orderByChild('uid'), equalTo(uid)));
 };

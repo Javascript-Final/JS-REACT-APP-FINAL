@@ -28,4 +28,13 @@ export const getChannelParticipants = (cid) => {
 //     const channelRef = ref(db, `channels/${channelTitle}`)
 //     await update(channelRef, channelId)
 //   }
-  
+
+export const getAllChannels = async (cid) => {
+    const snapshot = await get(ref(db, 'channels'));
+    if (snapshot.exists()) {
+      return Object.values(snapshot.val());
+    }
+    return [];
+}
+
+// [TODO]: Get channels by team id
