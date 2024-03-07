@@ -5,9 +5,12 @@ import Stack from '@mui/material/Stack';
 import { useParams } from "react-router-dom";
 import { getUserByUid } from "../services/user-service";
 
+import { getTeamsByUserUid } from "../services/teams-services";
+
 export const SingleUserProfileView = () => {
     const { uid } = useParams()
     const [userData, setUserData] = useState(null)
+  
 
     useEffect(() => {
         (async () => {

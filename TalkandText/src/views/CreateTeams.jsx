@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { createTeam, getTeamsByUid } from '../services/teams-services';
 // import Teams from './Teams';
+// import { getTeamsByUserUid } from '../services/teams-services';
 
 
 function CreateTeams() {
@@ -10,6 +11,7 @@ function CreateTeams() {
   const navigate = useNavigate();
    const { userData } = useContext(AppContext);
 
+ 
   
 
   const handleCreateTeam = async () => {

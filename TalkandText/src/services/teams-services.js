@@ -1,21 +1,27 @@
 import { get, set, ref, update, push, remove } from 'firebase/database';
 import { db } from '../config/firebase-config';
+import { getUserByHandle, getUserByUid } from './user-service';
+
 
 export const createTeam = async (name, userUid) => {
+  const user = await getUserByUid(userUid);
+  console.log(user.username);
+
   try {
     const result = await push(ref(db, 'teams'), {}); // Тук създаваме нов обект в колекцията 'teams' със празно съдържание и получаваме резултат от операцията.
-    const uid = result.key;// Взимаме уникален идентификатор (uid) на новосъздадения елемент
-    const owner = userUid;// Задаваме стойността на owner с текущия потребител (userUid).
+    const tid = result.key;// Взимаме уникален идентификатор (uid) на новосъздадения елемент
+    const owner = user.username;// Задаваме стойността на owner с текущия потребител (userUid).
     const channels = {}; // Инициализираме празен обект channels, който представлява канали за екипа.
     const members = []; // Инициализираме празен обект members, който представлява членовете на екипа.
-    members[userUid] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
+    // members[user.username] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
+    members.push(user.username);
 
-    await set(ref(db, `teams/${uid}`), { name, owner, members, channels, uid }); // Създаваме нов обект в колекцията 'teams' 
+    await set(ref(db, `teams/${name}`), { name, owner, members, channels, tid }); // Създаваме нов обект в колекцията 'teams' 
     // със зададените свойства като name, owner, members, channels и uid.
-    await update(ref(db), { [`users/${userUid}/MyTeams/${name}`]: uid }); // Обновяваме информацията за потребителя, като добавяме новия екип 
+    await update(ref(db), { [`users/${owner}/teams/${name}`]: { name, owner, members, channels, tid } }); // Обновяваме информацията за потребителя, като добавяме новия екип 
     // в списъка му с имена на екипите.
 
-    return uid; // Връщаме уникалния идентификатор на новосъздадения екип.
+    return tid; // Връщаме уникалния идентификатор на новосъздадения екип.
   } catch (error) {
     console.error('Error adding team:', error);
     throw error;
@@ -107,7 +113,7 @@ export const getTeamMembers = async (teamUid) => { // Функция, която
 };
 
 
-export const addTeamMember = async (teamUid, userUid) => { // Функция, която добавя член към екип.
+/* export const addTeamMember = async (teamUid, userUid) => { // Функция, която добавя член към екип.
     try {
         await update(ref(db, `teams/${teamUid}/members`), { [userUid]: true }); // Обновяваме обекта с членовете на екипа, като добавяме новия член.
         await update(ref(db, `users/${userUid}/MyTeams`), { [teamUid]: true }); // Обновяваме обекта с екипите на потребителя, като добавяме новия екип.
@@ -125,23 +131,27 @@ export const addTeamMember = async (teamUid, userUid) => { // Функция, к
             console.error('Error removing member:', error);
             throw error;
         }
-    }
+    } */
 
 
-    export const addJuryToContest = async (username, contestId) => {
-      const snapshot = await get(ref(db, `contests/${contestId}/jury/${username}`));
+    export const addMember = async (username, teamName) => {
+      const user = await getUserByHandle(username);
+      const snapshot = await get(ref(db, `teams/${teamName}/members/${username}`));
       if (!snapshot.exists()) {
           // await push(ref(db, `contests/${contestId}/jury/${username}`), true)
           // await push(ref(db, `users/${username}/jury/${contestId}`), true)
+          console.log(username);
+          
+          console.log(user.username);
           await update(ref(db), {
-              [`contests/${contestId}/jury/${username}`]: true,
-              [`users/${username}/jury/${contestId}`]: true,
+              [`teams/${teamName}/members/${username}`]: true,
+              [`users/${username}/teams/${teamName}`]: true,
           });
           return true;
       } else {
           await update(ref(db), {
-              [`contests/${contestId}/jury/${username}`]: null,
-              [`users/${username}/jury/${contestId}`]: null,
+              [`teams/${teamName}/members/${username}`]: null,
+              [`users/${username}/teams/${teamName}`]: null,
           });
           return false;
       }
