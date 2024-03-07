@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
-
+import { useEffect } from 'react';
 /**
  * 
  * @param {{ children: any }} props 
@@ -14,10 +14,12 @@ export default function Authenticated({ children }) {
   const { userData, setContext } = useContext(AppContext)
   const navigate = useNavigate();
   const location = useLocation();
-  
-  if (!user) {
-    navigate("/", { state: { from: location } });
-  }
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/", { state: { from: location } });
+    }
+  })
 
   return (
     <>

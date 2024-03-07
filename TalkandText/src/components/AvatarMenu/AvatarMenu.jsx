@@ -8,6 +8,8 @@ import { logout } from '../../services/auth-service';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import GroupsIcon from '@mui/icons-material/Groups';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 export const AvatarMenu = ({ open, anchorEl, handleClose }) => {
 
@@ -58,10 +60,17 @@ export const AvatarMenu = ({ open, anchorEl, handleClose }) => {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <MenuItem onClick={() => { navigate('/profile') }}>
-                <Avatar alt="User Avatar" src={userData?.avatarUrl} /> Profile
+                <Avatar alt="User Avatar" src={userData?.avatarUrl} /> My Profile
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={() => { navigate('/my-teams') }}>
+            <GroupsIcon sx={{ marginRight: "10px" }}/>  My Teams
             </MenuItem>
             <MenuItem onClick={() => { navigate('/create-teams') }}>
-                <GroupsIcon/> Create a team
+                <AddCircleIcon sx={{ marginRight: "10px" }}/>  Create a Team
+            </MenuItem>
+            <MenuItem onClick={() => { navigate('/create-channel') }}>
+                <AddCircleOutlineIcon sx={{ marginRight: "10px" }}/> Create a Channel
             </MenuItem>
             <Divider />
             <MenuItem onClick={logoutUser}>
