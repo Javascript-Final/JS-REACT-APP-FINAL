@@ -36,3 +36,5 @@ export const getAllChannels = async (cid) => {
     }
     return [];
 }
+
+// [TODO]: Get channels by team id

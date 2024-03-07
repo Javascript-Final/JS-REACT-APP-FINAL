@@ -18,8 +18,6 @@ export default function Authenticated({ children }) {
   useEffect(() => {
     if (!user) {
       navigate("/", { state: { from: location } });
-      debugger
-      // navigate("/")
     }
   })
 
