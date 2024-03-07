@@ -2,18 +2,18 @@ import { useState, useEffect } from 'react';
 import { getUserByHandle } from '../../services/user-service';
 import { ref, push } from 'firebase/database';
 import { db } from '../../config/firebase-config';
-import addTeamMember from '../../services/teams-services';
+import { addTeamMember } from '../../services/teams-services';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 
 
- const AddMemberInTeam = async (teamUid) => {
-    const userData = useContext(AppContext);
+ const AddMemberInTeam = (teamUid) => {
+    const { userData } = useContext(AppContext);
     // state
     const [userToAdd, setUserToAdd] = useState('');
 
-    const addTeamMember= (username, contestId) => {
-        addTeamMember(username, contestId)
+    const addTeamMember = (username, teamId) => {
+        addTeamMember(username, teamId)
             .then((result) => setTeamMember(result))
             .catch((error) => addToast("error", error.message));
     };
