@@ -24,8 +24,6 @@ export default function ChatView({ channelTitle }) {
         });
     }, [channelTitle]);
 
-
-
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (chatRef.current) {
@@ -40,8 +38,10 @@ export default function ChatView({ channelTitle }) {
     }, [messages]);
 
     const send = async () => {
-        await sendMessageToChannel(channelTitle, userData?.username, message);
-        setMessage('');
+        if (message.trim() !== '') {
+            await sendMessageToChannel(channelTitle, userData?.username, message);
+            setMessage('');
+        }
     };
 
     return (
@@ -64,6 +64,7 @@ export default function ChatView({ channelTitle }) {
                                 backgroundColor: '#e6e6e6',
                                 borderRadius: '10px',
                                 padding: '10px',
+                                color: 'blue', 
                             }}
                         >
                             <strong>
