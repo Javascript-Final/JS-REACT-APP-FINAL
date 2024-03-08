@@ -134,24 +134,28 @@ export const getTeamMembers = async (teamUid) => { // Функция, която
     } */
 
 
-export const addMember = async (username, teamName) => {
-  const user = await getUserByHandle(username);
-  const snapshot = await get(ref(db, `teams/${teamName}/members/${username}`));
+export const addMember = async (userId, teamId) => {
+
+  console.log(userId);
+ /*  const user = await getUserByUid(userId);
+  
+  console.log(user.teams); */
+
+ 
+  const snapshot = await get(ref(db, `teams/${teamId}/members/${userId}`));
   if (!snapshot.exists()) {
     // await push(ref(db, `contests/${contestId}/jury/${username}`), true)
     // await push(ref(db, `users/${username}/jury/${contestId}`), true)
-    console.log(username);
-
-    console.log(user.username);
+  
     await update(ref(db), {
-      [`teams/${teamName}/members/${username}`]: true,
-      [`users/${username}/teams/${teamName}`]: true,
+      [`teams/${teamId}/members/${userId}`]: true,
+      [`users/${userId}/teams/${teamId}`]: true,
     });
     return true;
   } else {
     await update(ref(db), {
-      [`teams/${teamName}/members/${username}`]: null,
-      [`users/${username}/teams/${teamName}`]: null,
+      [`teams/${teamId}/members/${userId}`]: null,
+      [`users/${userId}/teams/${teamId}`]: null,
     });
     return false;
   }

@@ -4,12 +4,19 @@ import { Avatar, Grid, Paper, Container, TextField, Button } from '@mui/material
 import Stack from '@mui/material/Stack';
 import { useParams } from "react-router-dom";
 import { getUserByUid } from "../services/user-service";
+// import  TemporaryDrawer  from "../components/AddMemberFromRightMenu/AddMemberFromRightMenu";
+import ComboBox from "../components/AddMemberFromRightMenu/AddMemberFromRightMenu";
+import { addMember } from "../services/teams-services";
 
-import { getTeamsByUserUid } from "../services/teams-services";
 
 export const SingleUserProfileView = () => {
     const { uid } = useParams()
     const [userData, setUserData] = useState(null)
+
+
+    const addMemberInTeam = async () => {
+        await addMember() // user.uid на избрания потребител по сърча и тийм ид на избрания тийм
+    }
   
 
     useEffect(() => {
@@ -70,9 +77,14 @@ export const SingleUserProfileView = () => {
                                 </Button>
                             </Grid>
                             <Grid item xs={6} p={4}>
-                                <Button variant="contained" color="primary" fullWidth>
-                                    Add to team
+                                <Button 
+                                variant="contained" 
+                                color="secondary" 
+                                fullWidth 
+                                onClick={addMemberInTeam}>
+                                 Add user to team
                                 </Button>
+                                <ComboBox />
                             </Grid>
                         </Grid>
                     </Paper>
