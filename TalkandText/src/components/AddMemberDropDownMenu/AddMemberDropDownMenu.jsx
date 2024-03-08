@@ -51,19 +51,33 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { AppContext } from '../../context/AppContext';
-import { useContext } from 'react';
-
+import { useContext, useEffect } from 'react';
+import { useState } from 'react';
+import { getOwnedTeamsFor } from '../../services/teams-services';
 export default function ComboBox() {
 
   const { userData } = useContext(AppContext);
-  const teams = userData?.teams;
-console.log(teams);
+  
+const [userTeams, setUserTeams] = useState([]);
+
+useEffect(() => {
+  (async () => {
+    if(!userData) return
+    setUserTeams(await getOwnedTeamsFor(userData?.username))
+  })()
+}, [])
+
+const userTeamItems = () => {
+  return userTeams.map((team) => ({ label: team.name, value: team.tid }))
+};
 
   return (
     <Autocomplete
       disablePortal
       id="combo-box-demo"
-      options={teams || []}
+      options={userTeamItems(userTeams)}
+      getOptionLabel={(option) => option.label}
+      //onChange={}
       sx={{ width: 240 }}
       renderInput={(params) => <TextField {...params} />}
     />

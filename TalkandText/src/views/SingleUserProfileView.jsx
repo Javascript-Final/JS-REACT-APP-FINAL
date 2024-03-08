@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import { useParams, useNavigate } from "react-router-dom";
 import { getUserByUid } from "../services/user-service";
 // import  TemporaryDrawer  from "../components/AddMemberFromRightMenu/AddMemberFromRightMenu";
-import ComboBox from "../components/AddMemberFromRightMenu/AddMemberFromRightMenu";
+import ComboBox from "../components/AddMemberDropDownMenu/AddMemberDropDownMenu";
 import { addMember } from "../services/teams-services";
 import ChatView from "./Chat";
 
