@@ -12,7 +12,7 @@ import FormLabel from '@mui/material/FormLabel';
 
 export default function CreateChannel() {
   const [form, setForm] = useState({
-    channelTitle: "",
+    channelTitle: "", 
     channelPrivacy: "public",
   });
   const { userData } = useContext(AppContext);

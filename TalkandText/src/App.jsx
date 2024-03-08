@@ -1,7 +1,7 @@
 import './App.css'
 import { useEffect, useState } from 'react'
 import { AppContext } from './context/AppContext'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import { Header } from './components/Header/Header';
 import Register from './components/Register/Register';
 import Home from './views/Home';
@@ -16,6 +16,7 @@ import CreateTeams from './views/CreateTeams';
 import Authenticated from './hoc/Authenticated'
 import Teams from './views/Teams';
 import { SingleUserProfileView } from './views/SingleUserProfileView';
+import ChatView from './views/Chat';
 
 function App() {
   const [context, setContext] = useState({
@@ -34,6 +35,10 @@ function App() {
         })
     }
   }, [user]);
+  function ChatViewWrapper() {
+    const { channelTitle } = useParams();
+    return <ChatView channelTitle={channelTitle} />;
+  }
 
   return (
     <BrowserRouter>
@@ -48,6 +53,7 @@ function App() {
           <Route path='/create-teams' element={<Authenticated><Header /><CreateTeams /></Authenticated>} />
           <Route path='/profile' element={<Authenticated><Header /><Profile /></Authenticated>} />
           <Route path='/teams/' element={<Authenticated><Header /><Teams /></Authenticated>} />
+          <Route path="/chat/:channelTitle" element={<Authenticated><Header /><ChatViewWrapper /></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>
