@@ -16,59 +16,69 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import { useParams } from 'react-router-dom';
+import { getChannelsByTid } from '../services/channel-service';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import CallIcon from '@mui/icons-material/Call';
 
 function SingleTeamView() {
 
     const [team, setTeam] = useState();
+    const [channels, setChannels] = useState();
 
-    const { teams } = useContext(AppContext);
+    const { tid } = useParams();
+
+    useEffect(() => {
+        (async () => {
+            const team = await getTeamsByUid(tid);
+            setTeam(team)
+            setChannels(await getChannelsByTid(tid))
+        })
+    })
+
+    const channelsInTeam = () => { 
+        return channels.map((channel) => ({ label: channel.channeTitle, value: channel.cid }))
+    }
 
     const drawerWidth = 240;
 
-        return (
-            <Box sx={{ display: 'flex' }}>
-                <CssBaseline />
-                <Drawer
-                    sx={{
-                        width: drawerWidth,
-                        flexShrink: 0,
-                        '& .MuiDrawer-paper': {
-                            width: drawerWidth,
-                            boxSizing: 'border-box',
-                        },
-                    }}
-                    variant="permanent"
-                    anchor="left"
-                >
-                    <Toolbar /> {/* [TODO] Add button that would navigate to create team and a "Call now" button that won't work */}
-                    <Divider />
-                    <List>
-                        {/* [TODO] Get all channels for the team. I can start by mocking the data if we can't fix the db */}
-                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => ( 
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <PeopleAltIcon />
-                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Drawer>
-                <Box
-                    component="main"
-                    sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-                >
-                    <Toolbar />
-                </Box>
+    return (
+        <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+            <Drawer
+                variant="permanent"
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                }}
+            >
+                <Toolbar />
+                   {/* [TODO] Make these buttons work*/}
+                <List>
+                    <AddCircleOutlineIcon sx={{ marginLeft: "16px"}}/>
+                    <CallIcon sx={{ marginLeft: "20px"}}/>
+                    {/* [TODO] Get all channels for the team. I can start by mocking the data if we can't fix the db */}
+                    {['channel', 'channel 1', 'channel 2'].map((text) => (
+                        <ListItem key={text} disablePadding>
+                            <ListItemButton>
+                                <PeopleAltIcon sx={{ marginRight: "10px" }} />
+                                <ListItemText primary={text} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
+            <Box
+                component="main"
+                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+            >
+                <Toolbar />
             </Box>
-        );
-    }
-
+        </Box>
+    );
+}
 
 export default SingleTeamView
 

@@ -40,7 +40,7 @@ export function Header() {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           <Toolbar>
             <Avatar alt="User Avatar" src="/madagascar.png" />
             <Typography

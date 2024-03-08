@@ -55,4 +55,9 @@ export const getAllChannels = async (cid) => {
     return [];
 }
 
+export const getChannelsByTid = async (tid) => {
+    const snapshot = await get(query(ref(db, 'channels'), orderByChild('tid'), equalTo(tid)))
+    return Object.values(snapshot.val())
+}
+
 // [TODO]: Get channels by team id
