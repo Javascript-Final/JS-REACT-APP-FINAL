@@ -1,14 +1,23 @@
 import { useContext, useEffect, useState } from "react"
-import { AppContext } from "../context/AppContext";
+import { AppContext, useAppContext } from "../context/AppContext";
 import { Avatar, Grid, Paper, Container, TextField, Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getUserByUid } from "../services/user-service";
 import { getTeamsByUserUid } from "../services/teams-services";
+import ChatView from "./Chat";
 
 export const SingleUserProfileView = () => {
+    const navigate = useNavigate();
     const { uid } = useParams()
-    const [userData, setUserData] = useState(null)
+    const [userProfileData, setUserData] = useState(null)
+    const {userData} = useAppContext();
+
+
+    function handleSendDm() {
+        const channelTitle = [userProfileData?.username, userData?.username].sort().join('+');
+        navigate(`/chat/${channelTitle}`);
+    }
   
 
     useEffect(() => {
@@ -18,11 +27,17 @@ export const SingleUserProfileView = () => {
         })()
     }, [])
 
+    // const handleSendDm = () => {
+    //     const channelTitle = [userData?.username, userData?.authenticatedUser].sort().join('+');
+        
+    //     return ChatView({ channelTitle })
+    // }
+
     return (
         <Container sx={{ mt: 6 }}>
             <Grid container spacing={6} sx={{ pt: 8 }}>
                 <Grid item xs={3}>
-                    <Avatar p={2} sx={{ height: '220px', width: '220px', background: "rgb(240, 240, 240)" }} alt="User Avatar" src={userData?.avatarUrl} />
+                    <Avatar p={2} sx={{ height: '220px', width: '220px', background: "rgb(240, 240, 240)" }} alt="User Avatar" src={userProfileData?.avatarUrl} />
                     <TextField
                         margin="normal"
                         required
@@ -30,7 +45,7 @@ export const SingleUserProfileView = () => {
                         label="Handle"
                         name="handle"
                         disabled
-                        value={userData?.username}
+                        value={userProfileData?.username}
                         fullWidth
                         InputLabelProps={{ shrink: true }}
                     />
@@ -45,7 +60,7 @@ export const SingleUserProfileView = () => {
                                     id="firstName"
                                     label="First Name"
                                     disabled
-                                    value={userData?.firstName}
+                                    value={userProfileData?.firstName}
                                     fullWidth
                                     InputLabelProps={{ shrink: true }}
                                 />
@@ -58,13 +73,13 @@ export const SingleUserProfileView = () => {
                                     label="Last Name"
                                     name="lastName"
                                     disabled
-                                    value={userData?.lastName}
+                                    value={userProfileData?.lastName}
                                     fullWidth
                                     InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
                             <Grid item xs={6} p={4}>
-                                <Button variant="contained" color="success" fullWidth>
+                                <Button variant="contained" color="success" fullWidth onClick={handleSendDm}>
                                     Send a DM
                                 </Button>
                             </Grid>
@@ -78,6 +93,5 @@ export const SingleUserProfileView = () => {
                 </Grid>
             </Grid>
         </Container>
-
     )
 }

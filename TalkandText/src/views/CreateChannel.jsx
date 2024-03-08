@@ -13,7 +13,7 @@ import { getOwnedTeamsFor, getTeamsByUserUid } from "../services/teams-services"
 
 export default function CreateChannel() {
   const [form, setForm] = useState({
-    channelTitle: "",
+    channelTitle: "", 
     channelPrivacy: "public",
     tid: null,
   });

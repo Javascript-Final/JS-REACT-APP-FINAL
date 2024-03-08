@@ -11,12 +11,30 @@ export const createChannel = async (channelTitle, channelPrivacy, username, tid)
         const cid = result.key; // Get the unique identifier (cid) of the newly created element.
         const participants = [username]; 
 
-        await set(ref(db, `channels/${cid}`), { channelTitle, channelPrivacy, participants, cid, tid });
+        await set(ref(db, `channels/${cid}`), { channelTitle, channelPrivacy, participants, cid, tid, messages: {} });
+
         return cid; 
     } catch (error) {
         console.error('Error adding channel:', error);
         throw error;
     }
+};
+
+
+export const sendMessageToChannel = async (channelTitle, username, message) => {
+
+  // Create a reference to the messages in the channel
+  const messagesRef = ref(db, `channels/${channelTitle}/messages`);
+
+  // Use the push method to create a new message
+  const newMessageRef = push(messagesRef);
+
+  // Set the message data
+  await set(newMessageRef, {
+    sender: username,
+    text: message,
+    timestamp: Date.now(),
+  });
 };
 
 export const getChannelParticipants = (cid) => {
