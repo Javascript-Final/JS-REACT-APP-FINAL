@@ -78,7 +78,7 @@ export const Profile = () => {
 
     return (
         <Container sx={{ mt: 6 }}>
-            <Grid container spacing={6}>
+            <Grid container spacing={6} sx={{ pt: 8 }}>
                 <Grid item xs={3}>
                     <Avatar p={2} sx={{ height: '220px', width: '220px', background: "rgb(240, 240, 240)" }} alt="User Avatar" src={userData?.avatarUrl} />
                 </Grid>

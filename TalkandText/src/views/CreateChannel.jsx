@@ -1,39 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createChannel } from "../services/channel-service";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
-import { Button, Grid, Paper, TextField, Container } from '@mui/material';
+import { Button, Grid, Paper, TextField, Container, Autocomplete } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import { getOwnedTeamsFor, getTeamsByUserUid } from "../services/teams-services";
 
 export default function CreateChannel() {
   const [form, setForm] = useState({
     channelTitle: "",
     channelPrivacy: "public",
+    tid: null,
   });
   const { userData } = useContext(AppContext);
+  const [userTeams, setUserTeams] = useState([])
+  
+  useEffect(() => {
+    (async () => {
+      if(!userData) return
+      setUserTeams(await getOwnedTeamsFor(userData?.username))
+    })()
+  }, [])
 
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const updateForm = (prop) => (e) => {
-    setForm({ ...form, [prop]: e.target.value });
+  const updateForm = (prop) => (e, autocompleteValue) => {
+    setForm({ ...form, [prop]: e.target.value || autocompleteValue.value });
     setError("");
   };
+
 
   const create = async () => {
     if (form.channelTitle.length < 3 || form.channelTitle.length > 40) {
       setError("Channel title must be between 3 and 40 characters long!");
       return;
     }
-
+  
     try {
       const username = userData?.username;
-      await createChannel(form.channelTitle, form.channelPrivacy, username);
+
+      await createChannel(form.channelTitle, form.channelPrivacy, username, form.tid);
       console.log(`Channel ${form.channelTitle} created! You are the first participant!`)
       navigate("/");
     } catch (error) {
@@ -41,11 +53,15 @@ export default function CreateChannel() {
     }
   };
 
+  const userTeamItems = () => {
+    return userTeams.map((team) => ({ label: team.name, value: team.tid }))
+  }
+
   return (
 
     <div>
       <Container sx={{ mt: 6 }}>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ pt: 8 }}>
           <Grid item xs={6} p={1}>
             <Paper>
               <Grid container p={1}>
@@ -84,13 +100,23 @@ export default function CreateChannel() {
                         value="public"
                         control={<Radio />}
                         label="Public"
-                        hecked={form.channelPrivacy === "public"}
+                        checked={form.channelPrivacy === "public"}
                         onChange={updateForm("channelPrivacy")}
                       />
 
                     </RadioGroup>
                   </FormControl>
                 </Grid>
+              </Grid>
+              <Grid item p={1} >
+                <Autocomplete
+                  disablePortal
+                  id="team-select"
+                  options={userTeamItems(userTeams)}
+                  getOptionLabel={(option) => option.label}
+                  onChange={updateForm("tid")}
+                  renderInput={(params) => <TextField {...params} label="Team" />}
+                />
               </Grid>
               <Grid container p={1}>
                 <Grid item xs={12} p={0}>

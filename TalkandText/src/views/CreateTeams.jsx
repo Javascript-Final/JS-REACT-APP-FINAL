@@ -17,8 +17,9 @@ function CreateTeams() {
   const handleCreateTeam = async () => {
     try {
 
-      if (teamName.length < 5) {
-        throw new Error('Team name must be at least 5 characters long.')
+      if (teamName.length < 3 || teamName.length > 40) {
+        setError("Team name must be between 3 and 40 characters long!");
+        return;
       }
       const newTeam = await createTeam(teamName, userData.uid);
       // const teamsRef = ref(db, 'teams/'); // Взимаме референция към колекцията 'teams'.
@@ -36,7 +37,7 @@ function CreateTeams() {
   return (
     <div>
       <Container sx={{ mt: 6 }}>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ pt: 8 }}>
           <Grid item xs={6} p={1}>
             <Paper>
               <Grid container p={1}>
