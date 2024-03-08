@@ -1,13 +1,17 @@
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../context/AppContext";
 import { updateUser } from "../services/user-service";
-import { Avatar, Divider, ListItemIcon, Typography, Grid, Paper, Container, Box, TextField, Button, Hidden } from '@mui/material';
+import { Avatar, Grid, Paper, Container, TextField, Button } from '@mui/material';
 import { getDownloadURL, ref as storageRef, uploadBytes } from "firebase/storage";
 import { storage } from "../config/firebase-config";
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 
 export const Profile = () => {
     const { user, userData, setContext } = useContext(AppContext);
     const [isEditing, setIsEditing] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
     const [form, setForm] = useState({
         firstName: userData?.firstName,
         lastName: userData?.lastName,
@@ -46,6 +50,7 @@ export const Profile = () => {
         updateUser(userData.username, updatedUserData);
         setContext({ user, userData: updatedUserData })
         setIsEditing(false);
+        setShowAlert(true)
     }
 
     const handleFileChange = (event) => {
@@ -69,29 +74,16 @@ export const Profile = () => {
             return;
         }
 
-
     }
 
     return (
         <Container sx={{ mt: 6 }}>
-
-            <Grid container spacing={6}>
+            <Grid container spacing={6} sx={{ pt: 8 }}>
                 <Grid item xs={3}>
-                    {/* <Paper> */}
                     <Avatar p={2} sx={{ height: '220px', width: '220px', background: "rgb(240, 240, 240)" }} alt="User Avatar" src={userData?.avatarUrl} />
-                    {/* <Box p={2} textAlign={"center"} alignContent={"center"}>
-                            <Typography component={"h1"} variant="h3">
-                                Profile
-                            </Typography>
-                        </Box>
-                        <Box p={2} justifyContent={"all"}>
-                            
-                        </Box> */}
-                    {/* </Paper> */}
                 </Grid>
                 <Grid item xs={9}>
                     <Paper>
-                        {/* <Typography> First name: {userData?.firstName} </Typography> */}
                         <Grid container p={3}>
                             <Grid item xs={6} p={2}>
                                 <TextField
@@ -106,7 +98,7 @@ export const Profile = () => {
                                 />
                             </Grid>
                             <Grid item xs={6} p={2}>
-                            <TextField
+                                <TextField
                                     margin="normal"
                                     required
                                     id="lastName"
@@ -119,7 +111,7 @@ export const Profile = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} p={2}>
-                            <TextField
+                                <TextField
                                     margin="normal"
                                     required
                                     id="email"
@@ -131,7 +123,7 @@ export const Profile = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} p={2}>
-                            <TextField
+                                <TextField
                                     margin="normal"
                                     required
                                     id="handle"
@@ -143,7 +135,7 @@ export const Profile = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} p={2}>
-                            <TextField
+                                <TextField
                                     margin="normal"
                                     required
                                     id="phoneNumber"
@@ -158,10 +150,15 @@ export const Profile = () => {
                             <Grid item xs={12} p={2}>
                                 {!isEditing && <Button color="primary" onClick={() => setIsEditing(true)}>Edit Profile</Button>}
                                 {isEditing && <Button color="primary" onClick={submit}>Save</Button>}
+                                {showAlert && (
+                                    <Stack sx={{ width: '100%' }} spacing={2}>
+                                        <Alert severity="success">Profile updated successfully.</Alert>
+                                    </Stack>
+                                )}
                                 {isEditing && <Button color="primary" onClick={() => document.getElementById("avatar-input").click()}>
                                     Upload Avatar
                                 </Button>}
-                                <input type="file" name="avatar" id="avatar-input" style={{"display": "none"}} onChange={handleFileChange} />
+                                <input type="file" name="avatar" id="avatar-input" style={{ "display": "none" }} onChange={handleFileChange} />
                             </Grid>
                         </Grid>
                     </Paper>
@@ -170,5 +167,5 @@ export const Profile = () => {
 
 
         </Container>
-        )
+    )
 }

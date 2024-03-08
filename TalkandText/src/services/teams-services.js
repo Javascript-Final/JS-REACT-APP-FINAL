@@ -1,11 +1,10 @@
-import { get, set, ref, update, push, remove } from 'firebase/database';
+import { get, set, ref, update, push, remove, equalTo, query, orderByChild } from 'firebase/database';
 import { db } from '../config/firebase-config';
 import { getUserByHandle, getUserByUid } from './user-service';
 
 
 export const createTeam = async (name, userUid) => {
   const user = await getUserByUid(userUid);
-  console.log(user.username);
 
   try {
     const result = await push(ref(db, 'teams'), {}); // Тук създаваме нов обект в колекцията 'teams' със празно съдържание и получаваме резултат от операцията.
@@ -133,6 +132,10 @@ export const getTeamMembers = async (teamUid) => { // Функция, която
         }
     } */
 
+export const getOwnedTeamsFor = async (userHandle) => {
+  const snapshot = await get(query(ref(db, `teams`), orderByChild('owner'), equalTo(userHandle)))
+  return Object.values(snapshot.val())
+}
 
 export const addMember = async (userId, teamId) => {
 

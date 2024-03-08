@@ -50,7 +50,11 @@ export function SearchBar() {
 
         const teams = allTeams
             .filter((team) => team.name.includes(inputContent))
-            .map((team) => { return {type: "team", content: `${team.name}`}}); 
+            .map((team) => { return {
+                type: "team", 
+                content: team.name,
+                destination: `../single-team-view/${team.tid}`
+            }}); 
 
         const channels = allChannels
             .filter((channel) => channel?.channelTitle?.includes(inputContent))
