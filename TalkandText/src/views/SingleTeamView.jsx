@@ -21,11 +21,12 @@ import { useParams } from 'react-router-dom';
 import { getChannelsByTid } from '../services/channel-service';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CallIcon from '@mui/icons-material/Call';
+import { getTeamsByUid } from '../services/teams-services';
 
 function SingleTeamView() {
 
     const [team, setTeam] = useState();
-    const [channels, setChannels] = useState();
+    const [channels, setChannels] = useState([]);
 
     const { tid } = useParams();
 
@@ -33,13 +34,10 @@ function SingleTeamView() {
         (async () => {
             const team = await getTeamsByUid(tid);
             setTeam(team)
-            setChannels(await getChannelsByTid(tid))
-        })
-    })
-
-    const channelsInTeam = () => { 
-        return channels.map((channel) => ({ label: channel.channeTitle, value: channel.cid }))
-    }
+            const channels = await getChannelsByTid(tid)
+            setChannels(channels)
+        })()
+    }, [])
 
     const drawerWidth = 240;
 
@@ -60,11 +58,13 @@ function SingleTeamView() {
                     <AddCircleOutlineIcon sx={{ marginLeft: "16px"}}/>
                     <CallIcon sx={{ marginLeft: "20px"}}/>
                     {/* [TODO] Get all channels for the team. I can start by mocking the data if we can't fix the db */}
-                    {['channel', 'channel 1', 'channel 2'].map((text) => (
-                        <ListItem key={text} disablePadding>
+                    {channels.map((channel) => (
+                        <ListItem key={channel.cid} disablePadding>
                             <ListItemButton>
                                 <PeopleAltIcon sx={{ marginRight: "10px" }} />
-                                <ListItemText primary={text} />
+                                <ListItemText>
+                                    {channel.channelTitle}
+                                </ListItemText>
                             </ListItemButton>
                         </ListItem>
                     ))}

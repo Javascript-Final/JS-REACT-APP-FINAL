@@ -1,4 +1,4 @@
-import { get, set, ref, equalTo,orderByChild, update, push } from "firebase/database";
+import { get, set, ref, equalTo,orderByChild, update, push, query } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const getChannelByCid = (cid) => {
