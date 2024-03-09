@@ -1,6 +1,6 @@
 import { get, set, ref, update, push, remove, equalTo, query, orderByChild } from 'firebase/database';
 import { db } from '../config/firebase-config';
-import { getUserByHandle, getUserByUid } from './user-service';
+import { getUserByHandle, getUserByUid, getUserTeams } from './user-service';
 
 
 export const createTeam = async (name, userUid) => {
@@ -101,36 +101,12 @@ export const getTeamMembers = async (teamUid) => { // Функция, която
     if (!snapshot.exists()) { // Проверяваме дали снимката не съществува.
       return []; // Връщаме празен масив, ако няма членове в екипа.
     }
-    const membersArray = Object.keys(snapshot.val()).filter( // Взимаме данните от снимката и ги преобразуваме в масив.
-      (memberId) => snapshot.val()[memberId] === true // Филтрираме масива, като взимаме само членовете, които са true.
-    );
-    return membersArray; // Връщаме масива с членовете на екипа.
+    return Object.values(snapshot.val()); // Връщаме масива с членовете на екипа.
   } catch (error) {
     console.error('Error fetching members:', error);
     throw error;
   }
 };
-
-
-/* export const addTeamMember = async (teamUid, userUid) => { // Функция, която добавя член към екип.
-    try {
-        await update(ref(db, `teams/${teamUid}/members`), { [userUid]: true }); // Обновяваме обекта с членовете на екипа, като добавяме новия член.
-        await update(ref(db, `users/${userUid}/MyTeams`), { [teamUid]: true }); // Обновяваме обекта с екипите на потребителя, като добавяме новия екип.
-    } catch (error) {
-        console.error('Error adding member:', error);
-        throw error;
-    }
-    };
-
-    export const removeTeamMember = async (teamUid, userUid) => { // Функция, която премахва член от екип.
-        try {
-            await update(ref(db, `teams/${teamUid}/members`), { [userUid]: null }); // Обновяваме обекта с членовете на екипа, като премахваме члена.
-            await update(ref(db, `users/${userUid}/MyTeams`), { [teamUid]: null }); // Обновяваме обекта с екипите на потребителя, като премахваме екипа.
-        } catch (error) {
-            console.error('Error removing member:', error);
-            throw error;
-        }
-    } */
 
 export const getOwnedTeamsFor = async (userHandle) => {
   const snapshot = await get(query(ref(db, `teams`), orderByChild('owner'), equalTo(userHandle)))
@@ -141,17 +117,15 @@ export const addMember = async (username, teamId) => {
  
   const snapshot = await get(ref(db, `teams/${teamId}/members/${username}`));
   if (!snapshot.exists()) {
-  
+    const teamMembers = await getTeamMembers(teamId) // getting the team members
+    teamMembers.push(username) // adding the new member to the team
+
     await update(ref(db), {
-      [`teams/${teamId}/members/${username}`]: true,
+      [`teams/${teamId}/members`]: teamMembers, // updating the record in the database with the new team member. changed the value to teamMembers instead of to true, for consistency
       [`users/${username}/teams/${teamId}`]: true,
     });
     return true;
   } else {
-    await update(ref(db), {
-      [`teams/${teamId}/members/${username}`]: null,
-      [`users/${username}/teams/${teamId}`]: null,
-    });
-    return false;
+    console.log("They are already a member of this team")
   }
 };
