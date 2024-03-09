@@ -137,28 +137,20 @@ export const getOwnedTeamsFor = async (userHandle) => {
   return Object.values(snapshot.val())
 }
 
-export const addMember = async (userId, teamId) => {
-
-  console.log(userId);
- /*  const user = await getUserByUid(userId);
-  
-  console.log(user.teams); */
-
+export const addMember = async (username, teamId) => {
  
-  const snapshot = await get(ref(db, `teams/${teamId}/members/${userId}`));
+  const snapshot = await get(ref(db, `teams/${teamId}/members/${username}`));
   if (!snapshot.exists()) {
-    // await push(ref(db, `contests/${contestId}/jury/${username}`), true)
-    // await push(ref(db, `users/${username}/jury/${contestId}`), true)
   
     await update(ref(db), {
-      [`teams/${teamId}/members/${userId}`]: true,
-      [`users/${userId}/teams/${teamId}`]: true,
+      [`teams/${teamId}/members/${username}`]: true,
+      [`users/${username}/teams/${teamId}`]: true,
     });
     return true;
   } else {
     await update(ref(db), {
-      [`teams/${teamId}/members/${userId}`]: null,
-      [`users/${userId}/teams/${teamId}`]: null,
+      [`teams/${teamId}/members/${username}`]: null,
+      [`users/${username}/teams/${teamId}`]: null,
     });
     return false;
   }

@@ -1,19 +1,47 @@
 import { useContext, useEffect, useState } from "react"
 import { AppContext, useAppContext } from "../context/AppContext";
-import { Avatar, Grid, Paper, Container, TextField, Button } from '@mui/material';
+import { Avatar, Grid, Paper, Container, TextField, Button,  Autocomplete } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { useParams, useNavigate } from "react-router-dom";
 import { getUserByUid } from "../services/user-service";
 // import  TemporaryDrawer  from "../components/AddMemberFromRightMenu/AddMemberFromRightMenu";
-import ComboBox from "../components/AddMemberDropDownMenu/AddMemberDropDownMenu";
-import { addMember } from "../services/teams-services";
+// import AddMemberDropDownMenu from "../components/AddMemberDropDownMenu/AddMemberDropDownMenu";
+ import { addMember, getTeamsByUid } from "../services/teams-services";
 import ChatView from "./Chat";
+// import { getTeamsByUid } from "../services/teams-services";
+ import { getOwnedTeamsFor } from "../services/teams-services";
+
 
 export const SingleUserProfileView = () => {
     const navigate = useNavigate();
+    const {userData, } = useAppContext();
     const { uid } = useParams()
     const [userProfileData, setUserData] = useState(null)
-    const {userData} = useAppContext();
+    // const [selectedTeamId, setSelectedTeamId] = useState([]);
+    const [userTeams, setUserTeams] = useState([]);
+    const [form, setForm] = useState({
+        teamName: "",
+        tid: null,
+      });
+
+    useEffect(() => {
+        (async () => {
+            console.log(userData);
+          if(!userData) return
+          setUserTeams(await getOwnedTeamsFor(userData?.username))
+        })()
+      }, [])
+
+      const updateForm = (prop) => (e, autocompleteValue) => {
+        setForm({ ...form, [prop]: e.target.value || autocompleteValue.value });
+        setError("");
+      };
+
+      const [error, setError] = useState("");
+      // const navigate = useNavigate();
+
+
+   
 
 
     function handleSendDm() {
@@ -21,11 +49,35 @@ export const SingleUserProfileView = () => {
         navigate(`/chat/${channelTitle}`);
     }
 
+  /*   useEffect(() => {
+        (async () => {
+            if(!userData) return
+            const selectTeam = await getTeamsByUid(userData?.teams);
+            setSelectedTeamId(selectTeam)
+        })()
+    }, []) */
 
+   /*  useEffect(() => {
+        (async () => {
+          if(!userData) return
+          setUserTeams(await getOwnedTeamsFor(userData?.username))
+        })()
+      }, []) */
+
+      const userTeamItems = () => {
+        return userTeams.map((team) => ({ label: team.name, value: team.tid }))
+      }
+    
+    
     const addMemberInTeam = async () => {
-        await addMember() // user.uid на избрания потребител по сърча и тийм ид на избрания тийм
+        // console.log(userTeams);
+        // console.log(userProfileData?.uid);
+        const teamDetails = userTeamItems(userTeams)
+        console.log(teamDetails[0].value);
+        
+        await addMember(userProfileData?.username, teamDetails[0].value) // user.uid на избрания потребител по сърча и тийм ид на избрания тийм
+        
     }
-  
 
     useEffect(() => {
         (async () => {
@@ -91,14 +143,26 @@ export const SingleUserProfileView = () => {
                                 </Button>
                             </Grid>
                             <Grid item xs={6} p={4}>
-                                <Button 
+                                {/* <AddMemberDropDownMenu /> */}
+                                <Grid item p={1} >
+                                    <Autocomplete
+                                    disablePortal
+                                    id="team-select"
+                                    options={userTeamItems(userTeams)}
+                                    getOptionLabel={(option) => option.label}
+                                    
+                                    onChange={updateForm("tid")}
+                                    renderInput={(params) => <TextField {...params} label="Team" />}
+                                    />
+                                    <Button 
                                 variant="contained" 
                                 color="secondary" 
                                 fullWidth 
+
                                 onClick={addMemberInTeam}>
                                  Add user to team
                                 </Button>
-                                <ComboBox />
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Paper>
