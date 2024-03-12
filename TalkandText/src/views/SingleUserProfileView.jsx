@@ -1,82 +1,61 @@
 import { useContext, useEffect, useState } from "react"
 import { AppContext, useAppContext } from "../context/AppContext";
-import { Avatar, Grid, Paper, Container, TextField, Button,  Autocomplete } from '@mui/material';
+import { Avatar, Grid, Paper, Container, TextField, Button, Autocomplete } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { useParams, useNavigate } from "react-router-dom";
 import { getUserByUid } from "../services/user-service";
 // import  TemporaryDrawer  from "../components/AddMemberFromRightMenu/AddMemberFromRightMenu";
 // import AddMemberDropDownMenu from "../components/AddMemberDropDownMenu/AddMemberDropDownMenu";
- import { addMember, getTeamsByUid } from "../services/teams-services";
+import { addMember, getTeamsByUid } from "../services/teams-services";
 import ChatView from "./Chat";
 // import { getTeamsByUid } from "../services/teams-services";
- import { getOwnedTeamsFor } from "../services/teams-services";
+import { getOwnedTeamsFor } from "../services/teams-services";
 
 
 export const SingleUserProfileView = () => {
     const navigate = useNavigate();
-    const {userData, } = useAppContext();
+    const { userData, } = useAppContext();
     const { uid } = useParams()
     const [userProfileData, setUserData] = useState(null)
     // const [selectedTeamId, setSelectedTeamId] = useState([]);
     const [userTeams, setUserTeams] = useState([]);
-    const [form, setForm] = useState({
-        teamName: "",
-        tid: null,
-      });
+    const [teamToBeAddedIn, setTeamToBeAddedIn] = useState(null)
 
     useEffect(() => {
         (async () => {
             console.log(userData);
-          if(!userData) return
-          setUserTeams(await getOwnedTeamsFor(userData?.username))
+            if (!userData) return
+            setUserTeams(await getOwnedTeamsFor(userData?.username))
         })()
-      }, [])
+    }, [])
 
-      const updateForm = (prop) => (e, autocompleteValue) => {
+    const updateForm = (prop) => (e, autocompleteValue) => {
         setForm({ ...form, [prop]: e.target.value || autocompleteValue.value });
         setError("");
-      };
+    };
 
-      const [error, setError] = useState("");
-      // const navigate = useNavigate();
-
-
-   
-
+    const [error, setError] = useState("");
+    // const navigate = useNavigate();
 
     function handleSendDm() {
         const channelTitle = [userProfileData?.username, userData?.username].sort().join('+');
         navigate(`/chat/${channelTitle}`);
     }
 
-  /*   useEffect(() => {
-        (async () => {
-            if(!userData) return
-            const selectTeam = await getTeamsByUid(userData?.teams);
-            setSelectedTeamId(selectTeam)
-        })()
-    }, []) */
+    // added a new function to set the state we will use when we click on the button
+    const onChangeTeamAutocomplete = (e, autocompleteValue) => {
+        setTeamToBeAddedIn(autocompleteValue.value)
+    }
 
-   /*  useEffect(() => {
-        (async () => {
-          if(!userData) return
-          setUserTeams(await getOwnedTeamsFor(userData?.username))
-        })()
-      }, []) */
 
-      const userTeamItems = () => {
+    const userTeamItems = () => {
         return userTeams.map((team) => ({ label: team.name, value: team.tid }))
-      }
-    
-    
+    }
+
+
     const addMemberInTeam = async () => {
-        // console.log(userTeams);
-        // console.log(userProfileData?.uid);
-        const teamDetails = userTeamItems(userTeams)
-        console.log(teamDetails[0].value);
-        
-        await addMember(userProfileData?.username, teamDetails[0].value) // user.uid на избрания потребител по сърча и тийм ид на избрания тийм
-        
+        console.log(teamToBeAddedIn)
+        await addMember(userProfileData?.username, teamToBeAddedIn) // user.uid на избрания потребител по сърча и тийм ид на избрания тийм 
     }
 
     useEffect(() => {
@@ -85,12 +64,6 @@ export const SingleUserProfileView = () => {
             setUserData(userProfile)
         })()
     }, [])
-
-    // const handleSendDm = () => {
-    //     const channelTitle = [userData?.username, userData?.authenticatedUser].sort().join('+');
-        
-    //     return ChatView({ channelTitle })
-    // }
 
     return (
         <Container sx={{ mt: 6 }}>
@@ -146,22 +119,21 @@ export const SingleUserProfileView = () => {
                                 {/* <AddMemberDropDownMenu /> */}
                                 <Grid item p={1} >
                                     <Autocomplete
-                                    disablePortal
-                                    id="team-select"
-                                    options={userTeamItems(userTeams)}
-                                    getOptionLabel={(option) => option.label}
-                                    
-                                    onChange={updateForm("tid")}
-                                    renderInput={(params) => <TextField {...params} label="Team" />}
+                                        disablePortal
+                                        id="team-select"
+                                        options={userTeamItems(userTeams)}
+                                        getOptionLabel={(option) => option.label}
+                                        onChange={onChangeTeamAutocomplete}
+                                        renderInput={(params) => <TextField {...params} label="Team" />}
                                     />
-                                    <Button 
-                                variant="contained" 
-                                color="secondary" 
-                                fullWidth 
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        fullWidth
 
-                                onClick={addMemberInTeam}>
-                                 Add user to team
-                                </Button>
+                                        onClick={addMemberInTeam}>
+                                        Add user to team
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </Grid>
