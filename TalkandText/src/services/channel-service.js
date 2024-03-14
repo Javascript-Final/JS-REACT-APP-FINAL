@@ -20,6 +20,20 @@ export const createChannel = async (channelTitle, channelPrivacy, username, tid)
     }
 };
 
+export const getChannelTitleByCid = async (cid) => {
+    try {
+        const snapshot = await get(ref(db, `channels/${cid}`));
+        if (snapshot.exists()) {
+            const channelData = snapshot.val();
+            return channelData.channelTitle;
+        }
+        return null;
+    } catch (error) {
+        console.error('Error getting channel title:', error);
+        throw error;
+    }
+};
+
 
 export const sendMessageToChannel = async (channelTitle, username, message) => {
 

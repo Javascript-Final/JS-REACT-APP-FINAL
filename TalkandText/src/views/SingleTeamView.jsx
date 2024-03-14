@@ -1,5 +1,5 @@
-import React from 'react'
-import CreateTeams from './CreateTeams'
+import React from 'react';
+import CreateTeams from './CreateTeams';
 import { db } from '../config/firebase-config';
 import { get, ref, query, orderByChild, equalTo } from "firebase/database";
 import PropTypes from 'prop-types';
@@ -22,9 +22,10 @@ import { getChannelsByTid } from '../services/channel-service';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CallIcon from '@mui/icons-material/Call';
 import { getTeamsByUid } from '../services/teams-services';
+import ChannelView from './ChannelView/ChannelView';
 
 function SingleTeamView() {
-
+    const [selectedChannel, setSelectedChannel] = useState(null);
     const [team, setTeam] = useState();
     const [channels, setChannels] = useState([]);
 
@@ -53,18 +54,21 @@ function SingleTeamView() {
                 }}
             >
                 <Toolbar />
-                   {/* [TODO] Make these buttons work*/}
+                {/* [TODO] Make these buttons work*/}
                 <List>
                     <AddCircleOutlineIcon sx={{ marginLeft: "16px"}}/>
                     <CallIcon sx={{ marginLeft: "20px"}}/>
                     {/* [TODO] Get all channels for the team. I can start by mocking the data if we can't fix the db */}
                     {channels.map((channel) => (
                         <ListItem key={channel.cid} disablePadding>
-                            <ListItemButton>
+                            <ListItemButton
+                                onClick={() => setSelectedChannel(channel.cid)}
+                                sx={{
+                                    backgroundColor: selectedChannel === channel.cid ? '#5CB1F2' : 'inherit',
+                                }}
+                            >
                                 <PeopleAltIcon sx={{ marginRight: "10px" }} />
-                                <ListItemText>
-                                    {channel.channelTitle}
-                                </ListItemText>
+                                <ListItemText primary={channel.channelTitle} />
                             </ListItemButton>
                         </ListItem>
                     ))}
@@ -76,13 +80,13 @@ function SingleTeamView() {
             >
                 <Toolbar />
             </Box>
+            {selectedChannel && <ChannelView style = {{paddingTop: "100px"}} cid={selectedChannel} />}
         </Box>
     );
 }
 
-export default SingleTeamView
+export default SingleTeamView;
 
 SingleTeamView.propTypes = {
     teamName: PropTypes.string,
 }
-// displays all chanells in this team

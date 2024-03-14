@@ -58,7 +58,7 @@ export function SearchBar() {
 
         const channels = allChannels
             .filter((channel) => channel?.channelTitle?.includes(inputContent))
-            .map((channel) => { return { type: "channel", content: `${channel.channelTitle}`}})
+            .map((channel) => { return { type: "channel", content: `${channel.channelTitle}`, destination: `/channel/${channel.cid}`}})
 
         setCurrentResult([...users, ...teams, ...channels]);
     }

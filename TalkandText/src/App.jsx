@@ -17,6 +17,7 @@ import Authenticated from './hoc/Authenticated'
 import Teams from './views/Teams';
 import { SingleUserProfileView } from './views/SingleUserProfileView';
 import ChatView from './views/Chat';
+import ChannelView from './views/ChannelView/ChannelView';
 
 function App() {
   const [context, setContext] = useState({
@@ -36,6 +37,7 @@ function App() {
     }
   }, [user, loading]);
 
+
  /*  useEffect(() => {
     if()
 
@@ -48,6 +50,11 @@ function App() {
     return <ChatView channelTitle={channelTitle} />;
   }
 
+  function ChannelViewWrapper() {
+    const { cid } = useParams();
+    return <ChannelView cid={cid} />;
+  }
+
   return (
     <BrowserRouter>
       <AppContext.Provider value={{ ...context, setContext }}>
@@ -55,14 +62,14 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/create-channel' element={<Authenticated loading={loading} ><Header /><CreateChannel /></Authenticated>} />
-          <Route path='/single-team-view/:tid' element={<Authenticated loading={loading} ><Header /><SingleTeamView /></Authenticated>} />
-          <Route path='/single-profile-view/:uid' element={<Authenticated loading={loading} ><Header /><SingleUserProfileView /></Authenticated>} />
-          <Route path='/create-teams' element={<Authenticated loading={loading} ><Header /><CreateTeams /></Authenticated>} />
-          <Route path='/my-teams' element={<Authenticated loading={loading} ><Header /></Authenticated>} />
-          <Route path='/profile' element={<Authenticated loading={loading} ><Header /><Profile /></Authenticated>} />
-          <Route path='/teams/' element={<Authenticated loading={loading} ><Header /><Teams /></Authenticated>} />
-          <Route path="/chat/:channelTitle" element={<Authenticated loading={loading} ><Header /><ChatViewWrapper /></Authenticated>} />
+          <Route path='/create-channel' element={<Authenticated><Header /><CreateChannel /></Authenticated>} />
+          <Route path='/single-team-view/:tid' element={<Authenticated><Header /><SingleTeamView /></Authenticated>} />
+          <Route path='/single-profile-view/:uid' element={<Authenticated><Header /><SingleUserProfileView /></Authenticated>} />
+          <Route path='/create-teams' element={<Authenticated><Header /><CreateTeams /></Authenticated>} />
+          <Route path='/my-teams' element={<Authenticated><Header /></Authenticated>} />
+          <Route path='/profile' element={<Authenticated><Header /><Profile /></Authenticated>} />
+          <Route path='/teams/' element={<Authenticated><Header /><Teams /></Authenticated>} />
+          <Route path="/chat/:channelTitle" element={<Authenticated><Header /><ChatViewWrapper /></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>
