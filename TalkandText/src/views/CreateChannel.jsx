@@ -25,7 +25,7 @@ export default function CreateChannel() {
       if(!userData) return
       setUserTeams(await getOwnedTeamsFor(userData?.username))
     })()
-  }, [])
+  }, [userData])
 
   const [error, setError] = useState("");
   const navigate = useNavigate();
