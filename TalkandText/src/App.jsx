@@ -17,6 +17,7 @@ import Authenticated from './hoc/Authenticated'
 import Teams from './views/Teams';
 import { SingleUserProfileView } from './views/SingleUserProfileView';
 import ChatView from './views/Chat';
+import ChannelView from './views/ChannelView/ChannelView';
 
 function App() {
   const [context, setContext] = useState({
@@ -35,9 +36,15 @@ function App() {
         })
     }
   }, [user]);
+
   function ChatViewWrapper() {
     const { channelTitle } = useParams();
     return <ChatView channelTitle={channelTitle} />;
+  }
+
+  function ChannelViewWrapper() {
+    const { cid } = useParams();
+    return <ChannelView cid={cid} />;
   }
 
   return (
@@ -55,6 +62,7 @@ function App() {
           <Route path='/profile' element={<Authenticated><Header /><Profile /></Authenticated>} />
           <Route path='/teams/' element={<Authenticated><Header /><Teams /></Authenticated>} />
           <Route path="/chat/:channelTitle" element={<Authenticated><Header /><ChatViewWrapper /></Authenticated>} />
+          <Route path="/channel/:cid" element={<Authenticated><Header /><ChannelViewWrapper /></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>

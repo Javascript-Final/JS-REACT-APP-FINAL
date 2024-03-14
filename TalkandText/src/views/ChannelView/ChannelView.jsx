@@ -1,17 +1,18 @@
 import { useState, useEffect, useContext, useRef } from 'react';
-import { sendMessageToChannel } from '../services/channel-service';
 import { getDatabase, ref, onValue } from 'firebase/database';
-import { AppContext } from '../context/AppContext';
+import { getChannelByCid, getChannelTitleByCid, sendMessageToChannel } from '../../services/channel-service';
+import { AppContext } from '../../context/AppContext';
 
-export default function ChatView({ channelTitle }) {
+export default function ChannelView({ cid }) {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [channelTitle, setChannelTitle] = useState('');
     const { userData } = useContext(AppContext);
     const chatRef = useRef(null);
 
     useEffect(() => {
         const db = getDatabase();
-        const messagesRef = ref(db, `channels/${channelTitle}/messages`);
+        const messagesRef = ref(db, `channels/${cid}/messages`);
 
         // Listen for changes in the messages node
         onValue(messagesRef, (snapshot) => {
@@ -22,7 +23,7 @@ export default function ChatView({ channelTitle }) {
             }
             setMessages(loadedMessages);
         });
-    }, [channelTitle]);
+    }, [cid]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -39,13 +40,27 @@ export default function ChatView({ channelTitle }) {
 
     const send = async () => {
         if (message.trim() !== '') {
-            await sendMessageToChannel(channelTitle, userData?.username, message);
+            await sendMessageToChannel(cid, userData?.username, message);
             setMessage('');
         }
-    };
+    }
+    
+    useEffect(() => {
+        const fetchChannelTitle = async () => {
+            try {
+                const channelTitle = await getChannelTitleByCid(cid);
+                setChannelTitle(channelTitle);
+            } catch (error) {
+                console.error('Error fetching channel title:', error);
+            }
+        };
 
+        fetchChannelTitle();
+    }, [cid]);
+ 
+    
     return (
-        <div style={{ maxHeight: '500px', overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: "40px" }} >
+        <div style={{ maxHeight: '500px', overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: '50px' }} >
             <h1>{channelTitle}</h1>
             <div ref={chatRef} style={{ flex: '1', overflowY: 'auto', marginBottom: 'auto' }}>
                 {messages.map((msg) => (
