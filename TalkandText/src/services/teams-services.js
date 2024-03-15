@@ -109,8 +109,13 @@ export const getTeamMembers = async (teamUid) => { // Функция, която
 };
 
 export const getOwnedTeamsFor = async (userHandle) => {
-  const snapshot = await get(query(ref(db, `teams`), orderByChild('owner'), equalTo(userHandle)))
-  return Object.values(snapshot.val())
+  const snapshot = await get(query(ref(db, `teams`), orderByChild('owner'), equalTo(userHandle)));
+
+  if (!snapshot.exists()) {
+    return [];
+  }
+
+  return Object.values(snapshot.val());
 }
 
 export const addMember = async (username, teamId) => {
