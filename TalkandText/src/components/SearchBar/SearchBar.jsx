@@ -41,7 +41,7 @@ export function SearchBar() {
     const searchFor = (inputContent) => {
         
         const users = allUsers
-            .filter((user) => user?.firstName?.includes(inputContent) || user?.lastName?.includes(inputContent) || user?.username?.includes(inputContent) || `${user.firstName} ${user.lastName}`.includes(inputContent))
+            .filter((user) => user?.firstName?.toLowerCase()?.includes(inputContent) || user?.lastName?.includes(inputContent) || user?.username?.includes(inputContent) || `${user.firstName} ${user.lastName}`.includes(inputContent))
             .map((user) => { return { 
                 type: "user",
                 content: `${user.firstName} ${user.lastName}`,
@@ -49,7 +49,7 @@ export function SearchBar() {
             } });
 
         const teams = allTeams
-            .filter((team) => team?.name?.includes(inputContent))
+            .filter((team) => team?.name?.toLowerCase()?.includes(inputContent))
             .map((team) => { return {
                 type: "team", 
                 content: team.name,
@@ -57,7 +57,7 @@ export function SearchBar() {
             }}); 
 
         const channels = allChannels
-            .filter((channel) => channel?.channelTitle?.includes(inputContent))
+            .filter((channel) => channel?.channelTitle?.toLowerCase()?.includes(inputContent))
             .map((channel) => { return { type: "channel", content: `${channel.channelTitle}`, destination: `/channel/${channel.cid}`}})
 
         setCurrentResult([...users, ...teams, ...channels]);
@@ -67,7 +67,7 @@ export function SearchBar() {
         e.preventDefault()
         const inputContent = e.target.value
         setSearchContent(inputContent)
-        if (inputContent.length < 3) {
+        if (inputContent.length < 2) {
             setOpen(false)
             return
         }
