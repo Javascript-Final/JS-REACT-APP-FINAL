@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { createTeam, getTeamsByUid } from '../services/teams-services';
 import { Button, Grid, Paper, TextField, Container } from '@mui/material';
-
+import { getOwnedTeamsFor } from '../services/teams-services';
 
 function CreateTeams() {
   const [teamName, setTeamName] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { userData } = useContext(AppContext);
 
@@ -15,29 +16,28 @@ function CreateTeams() {
       if (!userData) return;
       setTeamName(await getTeamsByUid())
     })()
-    },[userData])
-
-
+  }, [userData]);
 
   const handleCreateTeam = async () => {
     try {
-
       if (teamName.length < 3 || teamName.length > 40) {
         setError("Team name must be between 3 and 40 characters long!");
         return;
       }
+      const teams = await getOwnedTeamsFor(userData?.username);
+      console.log(teams);
+      if (teams.some((team) => team.name === teamName)) {
+        setError("Team name already exists!");
+        return;
+      }
+     
       const newTeam = await createTeam(teamName, userData.uid);
-      // const teamsRef = ref(db, 'teams/'); // Взимаме референция към колекцията 'teams'.
       const teamData = await getTeamsByUid(newTeam);
-      // console.log(teamData);
-
       navigate(`/my-teams`, { state: { teamData } });
-
     } catch (error) {
       console.error('Error creating team:', error);
     }
   };
-
 
   return (
     <div>
@@ -55,11 +55,21 @@ function CreateTeams() {
                     fullWidth
                     InputLabelProps={{ shrink: true }}
                     value={teamName}
-                    onChange={(e) => setTeamName(e.target.value)}
+                    onChange={(e) => {
+                      setTeamName(e.target.value);
+                      setError(''); // Clear the error when the user starts typing again
+                    }}
                     placeholder="Enter team name"
                   />
                 </Grid>
               </Grid>
+              {error && (
+                <Grid container p={1}>
+                  <Grid item xs={12} p={0}>
+                    <div style={{ color: 'red' }}>{error}</div>
+                  </Grid>
+                </Grid>
+              )}
               <Grid container p={1}>
                 <Grid item xs={12} p={0}>
                   <Button variant="contained" color="success" fullWidth onClick={handleCreateTeam}>
@@ -75,4 +85,4 @@ function CreateTeams() {
   );
 }
 
-  export default CreateTeams;
+export default CreateTeams;

@@ -42,19 +42,15 @@ export default function Teams() {
 
   
   return (
-    <div>
-      
-        <div>
-          <p>T</p>
-          <p>T</p>
-          <p>My teams:</p>
+    <div style={{ maxHeight: '500', overflow: 'auto' ,display: 'flex', 
+    flexDirection: 'column', paddingTop: '100px', paddingLeft: '30px' }}>
+          <p style={{ fontFamily: 'serif' ,fontSize: '25px' }}>My teams</p>
 
           {teamsData.map((team) => (
             <div key={team.tid}>
               <p>{team.name}</p>
             </div>
           ))}
-        </div>
       
     </div>
   );
