@@ -3,7 +3,7 @@ import { db } from '../config/firebase-config';
 import { getUserByHandle, getUserByUid, getUserTeams } from './user-service';
 
 
-export const createTeam = async (name, userUid) => {
+export const createTeam = async (name, userUid, members) => {
   const user = await getUserByUid(userUid);
 
   try {
