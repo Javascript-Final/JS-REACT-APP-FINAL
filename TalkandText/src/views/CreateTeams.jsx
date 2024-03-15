@@ -2,21 +2,32 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { createTeam, getTeamsByUid } from '../services/teams-services';
-import { Button, Grid, Paper, TextField, Container } from '@mui/material';
 import { getOwnedTeamsFor } from '../services/teams-services';
+import { Button, Grid, Paper, TextField, Container, Autocomplete, Typography, FormControl } from '@mui/material';
+import { getAllUsers } from '../services/user-service';
+import { useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 function CreateTeams() {
   const [teamName, setTeamName] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { userData } = useContext(AppContext);
+  const [usersToAdd, setUsersToAdd] = useState([])
+  const [allUsernames, setAllUsernames] = useState([])
+  const theme = useTheme();
 
   useEffect(() => {
     (async () => {
       if (!userData) return;
       setTeamName(await getTeamsByUid())
+      setAllUsernames((await getAllUsers(userData?.username)).map((u) => u.username))
     })()
   }, [userData]);
+
 
   const handleCreateTeam = async () => {
     try {
@@ -29,14 +40,44 @@ function CreateTeams() {
         setError("Team name already exists!");
         return;
       }
-     
-      const newTeam = await createTeam(teamName, userData.uid);
+
+      const newTeam = await createTeam(teamName, userData.uid, usersToAdd);
       const teamData = await getTeamsByUid(newTeam);
       navigate(`/my-teams`, { state: { teamData } });
     } catch (error) {
       console.error('Error creating team:', error);
     }
   };
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setUsersToAdd(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
+  function getStyles(name, theme) {
+    return {
+      fontWeight:
+        allUsernames.indexOf(name) === -1
+          ? theme.typography.fontWeightRegular
+          : theme.typography.fontWeightMedium,
+    };
+  }
 
   return (
     <div>
@@ -62,6 +103,32 @@ function CreateTeams() {
                   />
                 </Grid>
               </Grid>
+              <Grid item xs={12} p={0}>
+                <Grid container p={1}>
+                  <FormControl sx={{ width: 463 }}>
+                    <InputLabel id="add-members-label" >Add Members</InputLabel>
+                    <Select
+                      labelId="add-members-label"
+                      id="add-members-select"
+                      multiple
+                      value={usersToAdd}
+                      onChange={handleChange}
+                      input={<OutlinedInput label="Name" />}
+                      MenuProps={MenuProps}
+                    >
+                      {allUsernames.map((username) => {
+                        return <MenuItem
+                          key={username}
+                          value={username}
+                          style={getStyles(username, theme)}
+                        >
+                          {username}
+                        </MenuItem>
+                      })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
               {error && (
                 <Grid container p={1}>
                   <Grid item xs={12} p={0}>
@@ -80,7 +147,7 @@ function CreateTeams() {
           </Grid>
         </Grid>
       </Container>
-    </div>
+    </div >
   );
 }
 

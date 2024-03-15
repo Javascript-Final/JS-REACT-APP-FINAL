@@ -2,6 +2,8 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import { getChannelByCid, getChannelTitleByCid, sendMessageToChannel } from '../../services/channel-service';
 import { AppContext } from '../../context/AppContext';
+import { Button } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 
 export default function ChannelView({ cid }) {
     const [message, setMessage] = useState('');
@@ -119,7 +121,8 @@ export default function ChannelView({ cid }) {
                     onChange={(e) => setMessage(e.target.value)}
                     style={{ flex: '1', marginRight: '10px' }}
                 />
-                <button type="submit">Send</button>
+                <Button type="submit" startIcon={<SendIcon />}></Button>
+                {/* <button type="submit">Send</button> */}
             </form>
         </div>
     );

@@ -2,6 +2,8 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { sendMessageToChannel } from '../services/channel-service';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import { AppContext } from '../context/AppContext';
+import SendIcon from '@mui/icons-material/Send';
+import { Button } from '@mui/material';
 
 export default function ChatView({ channelTitle }) {
     const [message, setMessage] = useState('');
@@ -104,7 +106,8 @@ export default function ChatView({ channelTitle }) {
                     onChange={(e) => setMessage(e.target.value)}
                     style={{ flex: '1', marginRight: '10px' }}
                 />
-                <button type="submit">Send</button>
+                    <Button type="submit" startIcon={<SendIcon />}></Button>
+                {/* <SendIcon><button type="submit">Send</button></SendIcon> */}
             </form>
         </div>
     );
