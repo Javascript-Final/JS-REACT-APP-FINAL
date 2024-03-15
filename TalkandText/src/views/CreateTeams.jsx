@@ -25,7 +25,6 @@ function CreateTeams() {
         return;
       }
       const teams = await getOwnedTeamsFor(userData?.username);
-      console.log(teams);
       if (teams.some((team) => team.name === teamName)) {
         setError("Team name already exists!");
         return;

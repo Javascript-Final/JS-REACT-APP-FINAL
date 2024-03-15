@@ -2,30 +2,40 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/auth-service";
-import { Grid, Avatar, Typography, Box, Paper, TextField, Button, Link } from '@mui/material'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { getUserData } from "../../services/user-service";
+import {
+    Grid,
+    Avatar,
+    Typography,
+    Box,
+    Paper,
+    TextField,
+    Button,
+    Link,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 export default function Login({ switchComponent }) {
     const { user, setContext } = useContext(AppContext);
     const [form, setForm] = useState({
-        email: '',
-        password: '',
+        email: "",
+        password: "",
     });
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
     const location = useLocation();
 
-    const updateForm = prop => e => {
+    const updateForm = (prop) => (e) => {
         setForm({ ...form, [prop]: e.target.value });
     };
 
     useEffect(() => {
         if (user) {
-            navigate(location.state?.from.pathname || '/my-teams');
+            navigate(location.state?.from.pathname || "/my-teams");
             //navigate('/profile');
         }
-    }, [user])
+    }, [user]);
 
     const login = async () => {
         try {
@@ -34,6 +44,7 @@ export default function Login({ switchComponent }) {
             const userData = snapshot.val()[Object.keys(snapshot.val())[0]];
             setContext({ user: credentials.user, userData: userData });
         } catch (error) {
+            setError("Invalid email or password");
             console.log(error);
         }
     };
@@ -44,18 +55,23 @@ export default function Login({ switchComponent }) {
                 sx={{
                     my: 8,
                     mx: 4,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
                 }}
             >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Log in
                 </Typography>
                 <Box sx={{ mt: 1 }}>
+                    {error && (
+                        <Typography variant="body2" color="error">
+                            {error}
+                        </Typography>
+                    )}
                     <TextField
                         margin="normal"
                         required
@@ -65,7 +81,7 @@ export default function Login({ switchComponent }) {
                         name="email"
                         autoComplete="email"
                         autoFocus
-                        onChange={updateForm('email')}
+                        onChange={updateForm("email")}
                     />
                     <TextField
                         margin="normal"
@@ -76,7 +92,7 @@ export default function Login({ switchComponent }) {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                        onChange={updateForm('password')}
+                        onChange={updateForm("password")}
                     />
                     <Button
                         type="submit"
@@ -87,19 +103,18 @@ export default function Login({ switchComponent }) {
                     >
                         Log In
                     </Button>
-                    <Box display="flex"
+                    <Box
+                        display="flex"
                         justifyContent="center"
                         alignItems="center"
-                        onClick={switchComponent}>
+                        onClick={switchComponent}
+                    >
                         <Grid item>
-                            <Link variant="body2">
-                                {"Don't have an account? Sign Up"}
-                            </Link>
+                            <Link variant="body2">{"Don't have an account? Sign Up"}</Link>
                         </Grid>
                     </Box>
                 </Box>
             </Box>
         </Grid>
-    )
+    );
 }
-
