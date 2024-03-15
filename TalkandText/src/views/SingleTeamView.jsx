@@ -23,6 +23,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CallIcon from '@mui/icons-material/Call';
 import { getTeamsByUid } from '../services/teams-services';
 import ChannelView from './ChannelView/ChannelView';
+import { NavLink, useNavigate } from "react-router-dom"
 
 function SingleTeamView() {
     const [selectedChannel, setSelectedChannel] = useState(null);
@@ -30,6 +31,8 @@ function SingleTeamView() {
     const [channels, setChannels] = useState([]);
 
     const { tid } = useParams();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
@@ -54,11 +57,10 @@ function SingleTeamView() {
                 }}
             >
                 <Toolbar />
-                {/* [TODO] Make these buttons work*/}
+                {/* [TODO] Make the call button work*/}
                 <List>
-                    <AddCircleOutlineIcon sx={{ marginLeft: "16px"}}/>
+                    <AddCircleOutlineIcon onClick={() => { navigate('/create-channel')}} sx={{ marginLeft: "16px", cursor: "pointer"}}/>
                     <CallIcon sx={{ marginLeft: "20px"}}/>
-                    {/* [TODO] Get all channels for the team. I can start by mocking the data if we can't fix the db */}
                     {channels.map((channel) => (
                         <ListItem key={channel.cid} disablePadding>
                             <ListItemButton
