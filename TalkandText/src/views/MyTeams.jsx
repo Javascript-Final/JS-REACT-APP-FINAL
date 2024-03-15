@@ -9,7 +9,6 @@ import { getOwnedTeamsFor } from '../services/teams-services';
 export default function Teams() {
   const { userData } = useAppContext();
   const [teamsData, setTeamsData] = useState([]);
-  console.log(userData);
 
 /*   useEffect(() => {
     (async () => {
