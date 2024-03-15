@@ -29,9 +29,9 @@ function CreateTeams() {
       const newTeam = await createTeam(teamName, userData.uid);
       // const teamsRef = ref(db, 'teams/'); // Взимаме референция към колекцията 'teams'.
       const teamData = await getTeamsByUid(newTeam);
-      console.log(teamData);
+      // console.log(teamData);
 
-      navigate(`/teams`, { state: { teamData } });
+      navigate(`/my-teams`, { state: { teamData } });
 
     } catch (error) {
       console.error('Error creating team:', error);
