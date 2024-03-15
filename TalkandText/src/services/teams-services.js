@@ -114,7 +114,6 @@ export const getOwnedTeamsFor = async (userHandle) => {
   if (!snapshot.exists()) {
     return [];
   }
-
   return Object.values(snapshot.val());
 }
 
