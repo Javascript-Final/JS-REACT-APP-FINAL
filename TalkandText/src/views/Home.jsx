@@ -21,7 +21,7 @@ function Home() {
         md={7}
         alignContent={"center"}
         sx={{
-          backgroundImage: 'url(/madagascar.png),url(https://source.unsplash.com/random?wallpapers)',
+          backgroundImage: 'url(/madagascar.png),url(/ircl.png)',
           backgroundRepeat: 'no-repeat, no-repeat',
           backgroundColor: (t) =>
             t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
