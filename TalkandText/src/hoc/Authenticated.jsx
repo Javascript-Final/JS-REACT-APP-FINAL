@@ -12,21 +12,15 @@ import { useEffect,useState } from 'react';
 export default function Authenticated({ children, loading }) {
   const { user } = useContext(AppContext);
   const { userData, setContext } = useContext(AppContext)
-  const [isLoading, setLoading] = useState(loading)
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    
-    setLoading(loading)
-   
-  },[loading, user])
- 
+  if (!user) {
+    return <Navigate replace to="/login" state={{ from: location }} />
+  }
 
   return (
     <>
       {children}
-      {isLoading}
     </>
   )
 }

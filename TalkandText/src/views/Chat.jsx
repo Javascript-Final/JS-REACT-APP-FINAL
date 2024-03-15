@@ -16,10 +16,10 @@ export default function ChatView({ channelTitle }) {
         const messagesRef = ref(db, `channels/${channelTitle}/messages`);
 
         // Listen for changes in the messages node
-        onValue(messagesRef, (snapshot) => {
+      return onValue(messagesRef, (snapshot) => {
             const data = snapshot.val();
             const loadedMessages = [];
-            for (let id in data) {
+            for (const id in data) {
                 loadedMessages.push({ id, ...data[id] });
             }
             setMessages(loadedMessages);

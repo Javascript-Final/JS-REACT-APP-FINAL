@@ -62,7 +62,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/create-channel' element={<Authenticated><Header /><CreateChannel /></Authenticated>} />
+          <Route path='/create-channel' element={<Authenticated ><Header /><CreateChannel /></Authenticated>} />
           <Route path='/single-team-view/:tid' element={<Authenticated><Header /><SingleTeamView /></Authenticated>} />
           <Route path='/single-profile-view/:uid' element={<Authenticated><Header /><SingleUserProfileView /></Authenticated>} />
           <Route path='/create-teams' element={<Authenticated><Header /><CreateTeams /></Authenticated>} />

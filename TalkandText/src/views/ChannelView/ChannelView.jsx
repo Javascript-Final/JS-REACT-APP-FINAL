@@ -17,7 +17,7 @@ export default function ChannelView({ cid }) {
         const messagesRef = ref(db, `channels/${cid}/messages`);
 
         // Listen for changes in the messages node
-        onValue(messagesRef, (snapshot) => {
+        return onValue(messagesRef, (snapshot) => {
             const data = snapshot.val();
             const loadedMessages = [];
             for (let id in data) {
