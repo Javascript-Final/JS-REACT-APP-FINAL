@@ -62,7 +62,7 @@ export default function ChannelView({ cid }) {
  
     
     return (
-        <div style={{ maxHeight: '500px', overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: '50px' }} >
+        <div style={{ maxHeight: "100vh", overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: '70px', paddingLeft: "70px", paddingRight: "70px" }} >
             <h1>{channelTitle}</h1>
             <div ref={chatRef} style={{ flex: '1', overflowY: 'auto', marginBottom: 'auto' }}>
                 {messages.map((msg) => (

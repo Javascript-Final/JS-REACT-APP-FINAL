@@ -28,9 +28,7 @@ export default function Teams() {
     if (!userData) return
     setTeamsData(await getOwnedTeamsFor(userData?.username))
   })()
-  }, [userData])
- console.log(teamsData);
-  
+  }, [userData])  
     // show user teams 
   
    
