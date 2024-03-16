@@ -66,7 +66,7 @@ function App() {
           <Route path='/single-team-view/:tid' element={<Authenticated loading={loading} ><Header /><SingleTeamView /></Authenticated>} />
           <Route path='/single-profile-view/:uid' element={<Authenticated loading={loading} ><Header /><SingleUserProfileView /></Authenticated>} />
           <Route path='/create-teams' element={<Authenticated loading={loading} ><Header /><CreateTeams /></Authenticated>} />
-          <Route path='/my-teams' element={<Authenticated loading={loading} ><Header /><MyTeams /></Authenticated>} />
+          <Route path='/my-teams/:tid' element={<Authenticated loading={loading} ><Header /><MyTeams /></Authenticated>} />
           <Route path='/profile' element={<Authenticated loading={loading} ><Header /><Profile /></Authenticated>} />
           <Route path="/chat/:channelTitle" element={<Authenticated loading={loading} ><Header /><ChatViewWrapper /></Authenticated>} />
         </Routes>

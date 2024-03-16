@@ -41,7 +41,7 @@ function SingleTeamView() {
             const channels = await getChannelsByTid(tid)
             setChannels(channels)
         })()
-    }, [])
+    }, []);
 
     const drawerWidth = 240;
 

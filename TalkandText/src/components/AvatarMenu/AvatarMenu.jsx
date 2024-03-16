@@ -63,7 +63,7 @@ export const AvatarMenu = ({ open, anchorEl, handleClose }) => {
                 <Avatar alt="User Avatar" src={userData?.avatarUrl} /> My Profile
             </MenuItem>
             <Divider />
-            <MenuItem onClick={() => { navigate('/my-teams') }}>
+            <MenuItem onClick={() => { navigate('/my-teams/:tid') }}>
             <GroupsIcon sx={{ marginRight: "10px" }}/>  My Teams
             </MenuItem>
             <MenuItem onClick={() => { navigate('/create-teams') }}>

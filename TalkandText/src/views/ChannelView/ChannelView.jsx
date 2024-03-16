@@ -20,7 +20,7 @@ export default function ChannelView({ cid }) {
         return onValue(messagesRef, (snapshot) => {
             const data = snapshot.val();
             const loadedMessages = [];
-            for (let id in data) {
+            for (const id in data) {
                 loadedMessages.push({ id, ...data[id] });
             }
             setMessages(loadedMessages);
