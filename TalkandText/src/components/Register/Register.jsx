@@ -81,7 +81,7 @@ export default function Register({ switchComponent }) {
       setContext({ user, userData: null });
       navigate("/profile");
     } catch (error) {
-      console.log(error.message);
+      setError(error.message);
     }
   };
   return (
@@ -101,9 +101,7 @@ export default function Register({ switchComponent }) {
         <Typography component="h1" variant="h5">
           Register
         </Typography>
-        {error && <Alert severity="error">
-          Here is a gentle confirmation that your action was successful.
-        </Alert>}
+        {error && <Alert severity="error">{error}</Alert>}
         <Box sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -190,5 +188,6 @@ export default function Register({ switchComponent }) {
           </Box>
         </Box>
       </Box>
-    </Grid>)
+    </Grid>
+  );
 }
