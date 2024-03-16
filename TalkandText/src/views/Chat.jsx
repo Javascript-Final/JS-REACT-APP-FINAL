@@ -47,9 +47,9 @@ export default function ChatView({ channelTitle }) {
     };
 
     return (
-        <div style={{ maxHeight: '500px', overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: "40px" }} >
+        <div style={{ maxHeight: '93vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: "40px" }} >
             <h1>{channelTitle}</h1>
-            <div ref={chatRef} style={{ flex: '1', overflowY: 'auto', marginBottom: 'auto' }}>
+            <div ref={chatRef} id='message-box' style={{ flex: '1', overflowY: 'auto', marginBottom: 'auto', maxHeight: "80vh" }}>
                 {messages.map((msg) => (
                     <div
                         key={msg.id}
