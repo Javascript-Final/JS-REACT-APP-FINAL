@@ -42,15 +42,23 @@ export function Header() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           <Toolbar>
-            <Avatar alt="User Avatar" src="/madagascar.png" />
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-            >
-              HiGuys
-            </Typography>
+
+              <Avatar 
+              alt="User Avatar" 
+              src="/madagascar.png" 
+              onClick={() => navigate('/my-teams/:tid')}
+              sx={{cursor: "pointer"}}/>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ display: { xs: 'none', sm: 'block' } }}
+                onClick={() => navigate('/my-teams/:tid')}
+                sx={{cursor: "pointer"}}
+              >
+                HiGuys
+              </Typography>
+
             <SearchBar />
             <Box sx={{ flexGrow: 1 }} />
             <StyledBadge
