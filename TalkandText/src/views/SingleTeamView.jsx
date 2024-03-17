@@ -110,7 +110,6 @@ function SingleTeamView() {
                             sx={{ marginLeft: "20px", cursor: "pointer" }}
                             onClick={() => { navigate(`../add-members/${tid}`)}}
                             />
-                        <PersonRemoveAlt1Icon sx={{ marginLeft: "20px", cursor: "pointer" }} />
                     </>}
                     {membersUserData.map((member) => (
                         <ListItem key={member.uid} disablePadding>
