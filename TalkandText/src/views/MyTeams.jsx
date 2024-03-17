@@ -1,57 +1,119 @@
-import React from 'react'
-import Proptypes from 'prop-types'
-import { useLocation } from 'react-router-dom';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
-// import { getUserTeams } from '../services/user-service';
-import { getOwnedTeamsFor } from '../services/teams-services';
+import { getOwnedTeamsFor, getTeamsByUid } from '../services/teams-services';
+import GroupIcon from '@mui/icons-material/Group';
+import { getChannelsByTid } from '../services/channel-service';
+import TeamView from './TeamView';
+import SingleTeamView from './SingleTeamView';
 
-export default function Teams() {
+
+
+const drawerWidth = 240;
+
+export default function TeamsView() {
   const { userData } = useAppContext();
   const [teamsData, setTeamsData] = useState([]);
+  const [channels, setChannels] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const navigate = useNavigate();
 
-/*   useEffect(() => {
-    (async () => {
-      if (!userData) return
-      setTeamsData(await showUserTeams())
-    })()
-    // fetch teams data
-  }, [])
-  console.log(teamsData); */
-  /* const showMyTeams = async () => {
-    if (!userData) return
-    setTeamsData(await getOwnedTeamsFor(userData?.username))
-  } */
+    
+   const { tid } = useParams();
+  
   useEffect(() => {
+    
+    (async () => {
+    
+      if (!userData) return;
+      const teamsData = await getOwnedTeamsFor(userData?.username);
+      console.log(teamsData);
+      setTeamsData(teamsData);
+      // const channels = await getChannelsByTid(tid);
 
-  (async () => {
-    if (!userData) return
-    setTeamsData(await getOwnedTeamsFor(userData?.username))
-  })()
-  }, [userData])  
+      setChannels(channels);
+    })()
+  }, []);
+
+
     // show user teams 
   
-   
-
-  /* const location = useLocation();
-  const teamData = location.state?.teamData; */
-  // console.log(teamData.name);
-
-  
   return (
-    <div style={{ maxHeight: '500', overflow: 'auto' ,display: 'flex', 
-    flexDirection: 'column', paddingTop: '100px', paddingLeft: '30px' }}>
-          <p style={{ fontFamily: 'serif' ,fontSize: '25px' }}>My teams</p>
-
+  
+    <Box sx={{ display: 'flex' }}>
+      {/* Rest of the code */}
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <Toolbar />
+        <Divider />
+        <List>
+          {/* Генерираме ListItem за всеки отбор от вашия списък */}
           {teamsData.map((team) => (
-            <div key={team.tid}>
-              <p>{team.name}</p>
-            </div>
+            console.log(team.tid),
+            <ListItem key={team.tid} disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  setSelectedTeam(team.tid)
+                navigate(`/single-team-view/${team.tid}`)
+                }
+
+                } 
+                
+                
+                sx={{
+                  backgroundColor: selectedTeam === team.tid ? '#5CB1F2' : 'inherit',
+                }}
+              >
+                <ListItemIcon>
+                  <GroupIcon/>
+                </ListItemIcon>
+                <ListItemText primary={team.name} />
+              </ListItemButton>
+            </ListItem>
           ))}
-      
-    </div>
+        </List>
+        <Divider />
+       {/*  <List>
+          {/* Show channels related to the selected team */}
+          {/* {channels.map((channel) => (
+            <ListItem key={channel.cid} disablePadding>
+              <ListItemButton>
+                <ListItemText primary={channel.name} />
+              </ListItemButton>
+            </ListItem>
+          ))} */
+       }
+      </Drawer>
+      <Box
+                component="main"
+                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+            >
+                <Toolbar />
+            </Box>
+      {selectedTeam && <SingleTeamView style = {{paddingTop: "100px"}} tid={selectedTeam} />}
+    </Box>
   );
 }
-
-
-// components that display all

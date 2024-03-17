@@ -71,7 +71,12 @@ export const getAllChannels = async (cid) => {
 
 export const getChannelsByTid = async (tid) => {
     const snapshot = await get(query(ref(db, 'channels'), orderByChild('tid'), equalTo(tid)))
-    if(!snapshot.exists()) return []
+
+
+    if (!snapshot.exists()) {
+        return [];
+    }
+  
     return Object.values(snapshot.val())
 }
 

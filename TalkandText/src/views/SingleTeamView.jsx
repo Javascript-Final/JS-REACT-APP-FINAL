@@ -42,7 +42,7 @@ function SingleTeamView() {
             const memberUserData = memberCalls.map((snapshot) => snapshot.val())
             setMembersUserData(memberUserData)
         })()
-    }, [])
+    }, []);
 
     const drawerWidth = 240;
 
