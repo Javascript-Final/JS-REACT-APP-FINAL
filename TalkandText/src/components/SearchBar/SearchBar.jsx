@@ -166,7 +166,7 @@ export function SearchBar() {
                     currentResult.map((searchItem) => {
                         return <SearchItem type={searchItem.type}
                             content={searchItem.content}
-                            key={`${searchItem.type}-${searchItem.content}`}
+                            key={`${searchItem.type}-${searchItem.content}-${searchItem.destination}`}
                             destination={searchItem?.destination} />
                     })}
             </Menu>

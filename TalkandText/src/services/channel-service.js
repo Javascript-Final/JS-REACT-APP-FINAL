@@ -61,7 +61,7 @@ export const getChannelParticipants = (cid) => {
 //     await update(channelRef, channelId)
 //   }
 
-export const getAllChannels = async (cid) => {
+export const getAllChannels = async () => {
     const snapshot = await get(ref(db, 'channels'));
     if (snapshot.exists()) {
       return Object.values(snapshot.val());
