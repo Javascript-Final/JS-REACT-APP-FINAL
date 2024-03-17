@@ -1,6 +1,7 @@
 import { get, set, ref, update, push, remove, equalTo, query, orderByChild } from 'firebase/database';
 import { db } from '../config/firebase-config';
 import { getUserByHandle, getUserByUid, getUserTeams } from './user-service';
+import { createChannel } from './channel-service'
 
 
 export const createTeam = async (name, userUid, members) => {
@@ -11,18 +12,18 @@ export const createTeam = async (name, userUid, members) => {
     const tid = result.key;// Взимаме уникален идентификатор (uid) на новосъздадения елемент
     const owner = user.username;// Задаваме стойността на owner с текущия потребител (userUid).
     const channels = {}; // Инициализираме празен обект channels, който представлява канали за екипа.
-    //const members = []; // Инициализираме празен обект members, който представлява членовете на екипа.
-    // members[user.username] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
-    if(!members.includes(owner)) {
-      members.push(user.username);
+
+    if(!members.includes(owner)) { // Ако създателя на отбора не се е селектирал
+      members.push(user.username); // ... го добавяме в списака на членовете
     }
 
     await set(ref(db, `teams/${tid}`), { name, owner, members, channels, tid }); // Създаваме нов обект в колекцията 'teams' 
-    // със зададените свойства като name, owner, members, channels и uid.
-    //await update(ref(db), { [`users/${owner}/teams/${tid}`]: true }); // Обновяваме информацията за потребителя, като добавяме новия екип 
-    // в списъка му с имена на екипите.
-    //update(ref(db), {[`teams/${teamId}/members`]: newTeamMembers})
-    members.map((username) => update(ref(db), { [`users/${username}/teams/${tid}`]: true }))
+  
+    await createChannel("General", "public", owner, tid) // Създаваме "General" канал за екипа
+
+    members.map((username) => update(ref(db), { [`users/${username}/teams/${tid}`]: true })) // Създаваме запис в потребителите за членството им в екипа
+
+
 
     return tid; // Връщаме уникалния идентификатор на новосъздадения екип.
   } catch (error) {

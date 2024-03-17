@@ -43,7 +43,7 @@ function CreateTeams() {
 
       const newTeam = await createTeam(teamName, userData.uid, usersToAdd);
       const teamData = await getTeamsByUid(newTeam);
-      navigate(`/my-teams`, { state: { teamData } });
+      navigate(`/single-team-view/${newTeam}`);
     } catch (error) {
       console.error('Error creating team:', error);
     }
