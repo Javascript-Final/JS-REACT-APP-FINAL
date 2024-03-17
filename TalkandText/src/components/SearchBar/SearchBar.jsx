@@ -4,9 +4,10 @@ import { styled, alpha } from '@mui/material/styles';
 import { Menu, MenuItem, Grid, InputBase, Chip, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { getAllUsers } from '../../services/user-service';
-import { getAllChannels } from '../../services/channel-service';
+import { getAllChannels, getUserAndPublicChannels } from '../../services/channel-service';
 import { getAllTeams } from '../../services/teams-services';
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../../context/AppContext';
 
 const SearchItem = ({ type, content, destination }) => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const SearchItem = ({ type, content, destination }) => {
     }
 
     return (
-        <MenuItem onClick={() => {navigate(destination)}}>
+        <MenuItem onClick={() => { navigate(destination) }}>
             <Chip label={type} color={switchColor(type)} sx={{ marginRight: "10px" }} />
             {content}
         </MenuItem>
@@ -36,31 +37,35 @@ export function SearchBar() {
     const [currentResult, setCurrentResult] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [searchContent, setSearchContent] = useState("")
-    const [searchResult, setSearchResults] = useState([])
+    const { userData } = useAppContext();
 
     const searchFor = (inputContent) => {
-        
+
         const users = allUsers
             .filter((user) => user?.firstName?.toLowerCase()?.includes(inputContent) || user?.lastName?.includes(inputContent) || user?.username?.includes(inputContent) || `${user.firstName} ${user.lastName}`.includes(inputContent))
-            .map((user) => { return { 
-                type: "user",
-                content: `${user.firstName} ${user.lastName}`,
-                destination: `../single-profile-view/${user.uid}` 
-            } });
+            .map((user) => {
+                return {
+                    type: "user",
+                    content: `${user.firstName} ${user.lastName}`,
+                    destination: `../single-profile-view/${user.uid}`
+                }
+            });
 
         const teams = allTeams
             .filter((team) => team?.name?.toLowerCase()?.includes(inputContent))
-            .map((team) => { return {
-                type: "team", 
-                content: team.name,
-                destination: `../single-team-view/${team.tid}`
-            }}); 
+            .map((team) => {
+                return {
+                    type: "team",
+                    content: team.name,
+                    destination: `../single-team-view/${team.tid}`
+                }
+            });
 
         const channels = allChannels
             .filter((channel) => channel?.channelTitle?.toLowerCase()?.includes(inputContent))
-            .map((channel) => { return { type: "channel", content: `${channel.channelTitle}`, destination: `/single-team-view/${channel.tid}/${channel.cid}`}})
+            .map((channel) => { return { type: "channel", content: `${channel.channelTitle}`, destination: `/single-team-view/${channel.tid}/${channel.cid}` } })
 
-            setCurrentResult([...users, ...teams, ...channels]);
+        setCurrentResult([...users, ...teams, ...channels]);
     }
 
     const handleSearchEvent = (e) => {
@@ -82,7 +87,7 @@ export function SearchBar() {
         (async () => {
             const allUsers = await getAllUsers();
             const allTeams = await getAllTeams();
-            const allChannels = await getAllChannels();
+            const allChannels = await getUserAndPublicChannels(userData?.username);
 
             setAllUsers(allUsers);
             setAllTeams(allTeams);
@@ -174,4 +179,3 @@ export function SearchBar() {
     )
 }
 
- 
