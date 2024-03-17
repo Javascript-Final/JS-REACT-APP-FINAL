@@ -1,21 +1,16 @@
 import PropTypes from 'prop-types';
 import { Grid, ListItemText, ListItemButton, Box, Drawer, CssBaseline, Toolbar, List, Typography, ListItem, Avatar } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getChannelsByTid } from '../services/channel-service';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CallIcon from '@mui/icons-material/Call';
 import { getTeamsByUid, getTeamMembers, removeMember } from '../services/teams-services';
 import ChannelView from './ChannelView/ChannelView';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import PersonIcon from '@mui/icons-material/Person';
 import PersonRemoveAlt1Icon from '@mui/icons-material/PersonRemoveAlt1';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { getUserByHandle } from '../services/user-service';
 import { AppContext } from '../context/AppContext';
-import { X } from '@mui/icons-material';
-
 
 function SingleTeamView() {
     const [selectedChannel, setSelectedChannel] = useState(null);
@@ -34,7 +29,7 @@ function SingleTeamView() {
         if (typeof cid !== 'undefined') {
             setSelectedChannel(cid)
         }
-        
+
         (async () => {
             const team = await getTeamsByUid(tid);
             setTeam(team)
@@ -74,11 +69,9 @@ function SingleTeamView() {
                 }}
             >
                 <Toolbar />
-                {/* [TODO] Make the call button work*/}
                 <Typography p={"20px"}>Channels in {team.name}</Typography>
                 <List>
                     <AddCircleOutlineIcon onClick={() => { navigate('/create-channel') }} sx={{ marginLeft: "16px", cursor: "pointer" }} />
-                    <CallIcon sx={{ marginLeft: "20px" }} />
                     {channels.map((channel) => (
                         <ListItem key={channel.cid} disablePadding>
                             <ListItemButton
@@ -87,20 +80,12 @@ function SingleTeamView() {
                                     backgroundColor: selectedChannel === channel.cid ? '#5CB1F2' : 'inherit',
                                 }}
                             >
-                                {/* <PeopleAltIcon sx={{ marginRight: "10px" }} /> */}
                                 <ListItemText primary={channel.channelTitle} sx={{ overflowX: "hidden" }} />
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
             </Drawer>
-
-            {/* <Box
-                component="main"
-                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-            >
-                <Toolbar />
-            </Box> */}
             <Grid container>
                 <Grid item xs={12}>
                     <Box alignContent={"center"} alignItems={"center"}>
@@ -119,11 +104,13 @@ function SingleTeamView() {
             >
                 <Toolbar />
                 <Typography p={"20px"}>Members in {team.name}</Typography>
-                {/* [TODO] Make the add member and remove member button work*/}
                 <List>
                     {loggedInAsOwner() && <>
-                        <PersonAddIcon sx={{ marginLeft: "20px" }} />
-                        <PersonRemoveAlt1Icon sx={{ marginLeft: "20px" }} />
+                        <PersonAddIcon 
+                            sx={{ marginLeft: "20px", cursor: "pointer" }}
+                            onClick={() => { navigate(`../add-members/${tid}`)}}
+                            />
+                        <PersonRemoveAlt1Icon sx={{ marginLeft: "20px", cursor: "pointer" }} />
                     </>}
                     {membersUserData.map((member) => (
                         <ListItem key={member.uid} disablePadding>

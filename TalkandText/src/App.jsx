@@ -18,6 +18,7 @@ import MyTeams from './views/MyTeams';
 import { SingleUserProfileView } from './views/SingleUserProfileView';
 import ChatView from './views/Chat';
 import ChannelView from './views/ChannelView/ChannelView';
+import { AddMemberInTeamView } from './views/AddMemberInTeamView';
 
 function App() {
   const [context, setContext] = useState({
@@ -70,6 +71,7 @@ function App() {
           <Route path='/profile' element={<Authenticated loading={loading} ><Header /><Profile /></Authenticated>} />
           <Route path="/chat/:channelTitle" element={<Authenticated loading={loading} ><Header /><ChatViewWrapper /></Authenticated>} />
           <Route path="/channel/:cid" element={<Authenticated loading={loading}><Header /><ChannelViewWrapper /></Authenticated>} />
+          <Route path="/add-members/:tid" element={<Authenticated loading={loading}><Header /><AddMemberInTeamView /></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>
