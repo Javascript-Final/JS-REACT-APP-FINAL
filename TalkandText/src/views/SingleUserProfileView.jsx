@@ -65,8 +65,6 @@ export const SingleUserProfileView = () => {
         })()
     }, [])
 
-    console.log(userTeams);
-
     return (
         <Container sx={{ mt: 6 }}>
             <Grid container spacing={6} sx={{ pt: 8 }}>

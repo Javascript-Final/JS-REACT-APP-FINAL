@@ -32,7 +32,7 @@ function Home() {
           }}
         >
           <Box
-            container
+            display="flex"
             spacing={0}
             direction="row"
             alignItems="center"
