@@ -26,11 +26,15 @@ function SingleTeamView() {
     const [membersUserData, setMembersUserData] = useState([])
     const { user, userData, setContext } = useContext(AppContext)
 
-    const { tid } = useParams();
+    const { tid, cid } = useParams();
 
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (typeof cid !== 'undefined') {
+            setSelectedChannel(cid)
+        }
+        
         (async () => {
             const team = await getTeamsByUid(tid);
             setTeam(team)
@@ -42,7 +46,7 @@ function SingleTeamView() {
             const memberUserData = memberCalls.map((snapshot) => snapshot.val())
             setMembersUserData(memberUserData)
         })()
-    }, []);
+    }, [tid, cid]);
 
     const drawerWidth = 240;
 

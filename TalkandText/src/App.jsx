@@ -63,12 +63,13 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route path='/create-channel' element={<Authenticated loading={loading} ><Header /><CreateChannel /></Authenticated>} />
-          <Route path='/single-team-view/:tid' element={<Authenticated loading={loading} ><Header /><SingleTeamView /></Authenticated>} />
+          <Route path='/single-team-view/:tid/:cid?' element={<Authenticated loading={loading} ><Header /><SingleTeamView /></Authenticated>} />
           <Route path='/single-profile-view/:uid' element={<Authenticated loading={loading} ><Header /><SingleUserProfileView /></Authenticated>} />
           <Route path='/create-teams' element={<Authenticated loading={loading} ><Header /><CreateTeams /></Authenticated>} />
           <Route path='/my-teams/:tid' element={<Authenticated loading={loading} ><Header /><MyTeams /></Authenticated>} />
           <Route path='/profile' element={<Authenticated loading={loading} ><Header /><Profile /></Authenticated>} />
           <Route path="/chat/:channelTitle" element={<Authenticated loading={loading} ><Header /><ChatViewWrapper /></Authenticated>} />
+          <Route path="/channel/:cid" element={<Authenticated loading={loading}><Header /><ChannelViewWrapper /></Authenticated>} />
         </Routes>
       </AppContext.Provider>
     </BrowserRouter>
