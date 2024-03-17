@@ -11,14 +11,18 @@ export const createTeam = async (name, userUid, members) => {
     const tid = result.key;// Взимаме уникален идентификатор (uid) на новосъздадения елемент
     const owner = user.username;// Задаваме стойността на owner с текущия потребител (userUid).
     const channels = {}; // Инициализираме празен обект channels, който представлява канали за екипа.
-    const members = []; // Инициализираме празен обект members, който представлява членовете на екипа.
+    //const members = []; // Инициализираме празен обект members, който представлява членовете на екипа.
     // members[user.username] = true; // Задаваме члена на екипа като ключ в обекта members със стойност true.
-    members.push(user.username);
+    if(!members.includes(owner)) {
+      members.push(user.username);
+    }
 
     await set(ref(db, `teams/${tid}`), { name, owner, members, channels, tid }); // Създаваме нов обект в колекцията 'teams' 
     // със зададените свойства като name, owner, members, channels и uid.
-    await update(ref(db), { [`users/${owner}/teams`]:  [...(user?.teams || []), name ] }); // Обновяваме информацията за потребителя, като добавяме новия екип 
+    //await update(ref(db), { [`users/${owner}/teams/${tid}`]: true }); // Обновяваме информацията за потребителя, като добавяме новия екип 
     // в списъка му с имена на екипите.
+    //update(ref(db), {[`teams/${teamId}/members`]: newTeamMembers})
+    members.map((username) => update(ref(db), { [`users/${username}/teams/${tid}`]: true }))
 
     return tid; // Връщаме уникалния идентификатор на новосъздадения екип.
   } catch (error) {
@@ -133,3 +137,11 @@ export const addMember = async (username, teamId) => {
     console.log("They are already a member of this team")
   }
 };
+
+export const removeMember = async (toBeDeletedUserData, teamId) => {
+  const team = await getTeamsByUid(teamId)
+  if(team.owner === toBeDeletedUserData.username) return // Prevent deletion of team owner
+  const newTeamMembers = team.members.filter((x) => x !== toBeDeletedUserData.username)
+  update(ref(db), {[`teams/${teamId}/members`]: newTeamMembers})
+  remove(ref(db, `users/${toBeDeletedUserData.username}/teams/${teamId}`))
+}

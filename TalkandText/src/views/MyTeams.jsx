@@ -49,8 +49,7 @@ export default function TeamsView() {
   }, []);
 
 
-
-  
+    // show user teams 
   
   return (
   
