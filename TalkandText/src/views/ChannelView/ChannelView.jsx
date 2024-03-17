@@ -119,10 +119,9 @@ export default function ChannelView({ cid }) {
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    style={{ flex: '1', marginRight: '10px' }}
+                    style={{ flex: '1', marginRight: '10px', backgroundColor: "white", color: "black" }}
                 />
                 <Button type="submit" startIcon={<SendIcon />}></Button>
-                {/* <button type="submit">Send</button> */}
             </form>
         </div>
     );
