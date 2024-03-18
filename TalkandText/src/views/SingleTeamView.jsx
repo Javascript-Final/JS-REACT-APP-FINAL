@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Grid, ListItemText, ListItemButton, Box, Drawer, CssBaseline, Toolbar, List, Typography, ListItem, Avatar } from '@mui/material';
+import { Grid, ListItemText, ListItemButton, Box, Drawer, CssBaseline, Toolbar, List, Typography, ListItem, Avatar, Tooltip } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getChannelsByTid } from '../services/channel-service';
@@ -70,7 +70,9 @@ function SingleTeamView() {
                 <Toolbar />
                 <Typography fontWeight="bold" p={"20px"}>Channels in {team.name}</Typography>
                 <List>
-                    <AddCircleOutlineIcon onClick={() => { navigate('/create-channel') }} sx={{ marginLeft: "16px", cursor: "pointer" }} />
+                    <Tooltip title="Create Channel">
+                        <AddCircleOutlineIcon onClick={() => { navigate('/create-channel') }} sx={{ marginLeft: "16px", cursor: "pointer" }} />
+                    </ Tooltip>
                     {channels.map((channel) => (
                         <ListItem key={channel.cid} disablePadding>
                             <ListItemButton
@@ -105,10 +107,13 @@ function SingleTeamView() {
                 <Typography p={"20px"} fontWeight="bold">Members in {team.name}</Typography>
                 <List>
                     {loggedInAsOwner() && <>
-                        <PersonAddIcon 
-                            sx={{ marginLeft: "20px", cursor: "pointer" }}
-                            onClick={() => { navigate(`../add-members/${tid}`)}}
+                        <Tooltip title="Add Member">
+                            <PersonAddIcon
+                                sx={{ marginLeft: "20px", cursor: "pointer" }}
+                                onClick={() => { navigate(`../add-members/${tid}`) }}
                             />
+                        </ Tooltip>
+
                     </>}
                     {membersUserData.map((member) => (
                         <ListItem key={member.uid} disablePadding>
@@ -120,12 +125,17 @@ function SingleTeamView() {
                             >
                                 <Avatar alt={`${member.firstName}'s avatar`} src={member.avatarUrl} />
                                 <ListItemText primary={member.username} />
-                                {loggedInAsOwner() && team.owner !== member.username && <PersonRemoveAlt1Icon onClick={tryToRemoveMember(member)} />}
+                                {loggedInAsOwner() && team.owner !== member.username &&
+                                    <Tooltip title="Remove Member">
+                                        <PersonRemoveAlt1Icon onClick={tryToRemoveMember(member)} />
+                                    </Tooltip>}
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
-                <RemoveCircleIcon sx={{ marginLeft: "17px" }} />
+                <Tooltip title="Leave Team">
+                    <RemoveCircleIcon sx={{ marginLeft: "17px", cursor: "pointer" }} />
+                </Tooltip>
             </Drawer>
         </Box>
     );
