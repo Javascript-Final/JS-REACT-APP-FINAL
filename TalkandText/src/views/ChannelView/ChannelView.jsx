@@ -76,26 +76,34 @@ export default function ChannelView({ cid }) {
                                 marginBottom: '10px',
                             }}
                         >
+
+                            <strong style= {{paddingLeft: '6px', paddingRight: '6px'}}>
+                                {typeof msg.sender === 'object'
+                                    ? JSON.stringify(msg.sender)
+                                    : msg.sender}
+                            </strong>
+
                             <div
                                 style={{
                                     display: 'flex',
+                                    flexDirection: msg.sender === userData?.username ? 'row-reverse' : 'row',
                                     alignItems: 'center',
-                                    backgroundColor: '#e6e6e6',
-                                    borderRadius: '10px',
-                                    padding: '10px',
-                                    color: 'blue',
                                 }}
                             >
-                                <Avatar src={msg.avatarUrl} style={{ marginRight: '10px' }} />
-                                <strong>
-                                    {typeof msg.sender === 'object'
-                                        ? JSON.stringify(msg.sender)
-                                        : msg.sender}
-                                </strong>
-                                :{' '}
-                                {typeof msg.text === 'object'
-                                    ? JSON.stringify(msg.text)
-                                    : msg.text}
+                                <Avatar src={msg.avatarUrl} style={{ margin: '0 10px', width: '30px', height: '30px' }} />
+                                <div
+                                    style={{
+                                        backgroundColor: '#e6e6e6',
+                                        borderRadius: '10px',
+                                        padding: '10px',
+                                        color: 'black',
+                                        fontSize: '16px',
+                                    }}
+                                >
+                                    {typeof msg.text === 'object'
+                                        ? JSON.stringify(msg.text)
+                                        : msg.text}
+                                </div>
                             </div>
                             <div
                                 style={{
@@ -127,7 +135,7 @@ export default function ChannelView({ cid }) {
                     onChange={(e) => setMessage(e.target.value)}
                     style={{ flex: '0.8', maxWidth: '600px', marginRight: '10px', backgroundColor: "white", color: "black", height: '30px', borderRadius: '5px', padding: '5px' }}
                 />
-                <Button type="submit" startIcon={<SendIcon />} variant="contained" color="primary">Send</Button>
+                <Button type="submit" startIcon={<SendIcon />} variant="contained" color="primary" style={{ height: '30px' }}>Send</Button>
             </form>
         </div>
     );
