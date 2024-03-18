@@ -3,17 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { createTeam, getTeamsByUid } from '../services/teams-services';
 import { getOwnedTeamsFor } from '../services/teams-services';
-import { Button, Grid, Paper, TextField, Container, Autocomplete, Typography, FormControl } from '@mui/material';
+import { Button, Grid, Paper, TextField, Container, FormControl } from '@mui/material';
 import { getAllUsers } from '../services/user-service';
 import { useTheme } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 
 function CreateTeams() {
   const [teamName, setTeamName] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState(false);
   const navigate = useNavigate();
   const { userData } = useContext(AppContext);
   const [usersToAdd, setUsersToAdd] = useState([])
@@ -27,7 +30,6 @@ function CreateTeams() {
       setAllUsernames((await getAllUsers(userData?.username)).map((u) => u.username))
     })()
   }, [userData]);
-
 
   const handleCreateTeam = async () => {
     try {
@@ -43,7 +45,10 @@ function CreateTeams() {
 
       const newTeam = await createTeam(teamName, userData.uid, usersToAdd);
       const teamData = await getTeamsByUid(newTeam);
-      navigate(`/single-team-view/${newTeam}`);
+      setSuccessMessage(true);
+      setTimeout(() => {
+        navigate(`/single-team-view/${newTeam}`);
+      }, 3000);
     } catch (error) {
       console.error('Error creating team:', error);
     }
@@ -133,6 +138,15 @@ function CreateTeams() {
                 <Grid container p={1}>
                   <Grid item xs={12} p={0}>
                     <div style={{ color: 'red' }}>{error}</div>
+                  </Grid>
+                </Grid>
+              )}
+              {successMessage && (
+                <Grid container p={1}>
+                  <Grid item xs={12} p={0}>
+                    <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                      Welcome to your new team! You can now start adding channels and inviting members.
+                    </Alert>
                   </Grid>
                 </Grid>
               )}

@@ -10,6 +10,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { getOwnedTeamsFor } from "../services/teams-services";
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 
 export default function CreateChannel(tid) {
   const [form, setForm] = useState({
@@ -21,6 +23,7 @@ export default function CreateChannel(tid) {
   const { userData } = useContext(AppContext);
   const [userTeams, setUserTeams] = useState([]);
   const [channelExists, setChannelExists] = useState(false); // New state variable
+  const [successMessage, setSuccessMessage] = useState(false); // New state variable
   const location = useLocation();
 
   useEffect(() => {
@@ -32,6 +35,7 @@ export default function CreateChannel(tid) {
 
   useEffect(() => {
     setChannelExists(false); // Reset channelExists when channelTitle or tid changes
+    setSuccessMessage(false); // Reset successMessage when channelTitle or tid changes
   }, [form.channelTitle, form.tid]);
 
   const [error, setError] = useState("");
@@ -59,7 +63,7 @@ export default function CreateChannel(tid) {
 
     const doesExist = await doesChannelExist(form.channelTitle, form.tid);
     if (doesExist) {
-      setChannelExists(true); // Set channelExists to true if channel already exists
+      setChannelExists(true);
       return;
     }
 
@@ -67,10 +71,12 @@ export default function CreateChannel(tid) {
       const username = userData?.username;
 
       await createChannel(form.channelTitle, form.channelPrivacy, username, form.tid);
-      console.log(`Channel ${form.channelTitle} created! You are the first participant!`);
+      setSuccessMessage(true);
+      setTimeout(() => {
       navigate(`/single-team-view/${form.tid}`);
+      }, 3000);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
@@ -87,7 +93,7 @@ export default function CreateChannel(tid) {
             <Paper>
               <Grid container p={1}>
                 <Grid item xs={12} p={0}>
-                  {channelExists && ( // Render error message if channelExists is true
+                  {channelExists && (
                     <div style={{ color: "red", textAlign: "center" }}>
                       A channel with this title already exists in this team!
                     </div>
@@ -145,6 +151,11 @@ export default function CreateChannel(tid) {
               </Grid>
               <Grid container p={1}>
                 <Grid item xs={12} p={0}>
+                  {successMessage && (
+                    <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                      Welcome to your new channel! You can now start chatting with your team members.
+                    </Alert>
+                  )}
                   <Button variant="contained" color="secondary" fullWidth onClick={create}>
                     Create a New Channel
                   </Button>

@@ -9,7 +9,6 @@ import { AppContext } from '../../context/AppContext';
 
  const AddMemberInTeam = (teamUid) => {
     const { userData } = useContext(AppContext);
-    // state
     const [userToAdd, setUserToAdd] = useState('');
 
     const addTeamMember = (username, teamId) => {
@@ -23,7 +22,7 @@ import { AppContext } from '../../context/AppContext';
     useEffect(() => {
         addTeamMember(userToAdd, teamUid);
     }, [userToAdd, teamUid]);
-    //const userToAdd = '123123';
+   
     const user = getUserByHandle(userToAdd);
    
   
