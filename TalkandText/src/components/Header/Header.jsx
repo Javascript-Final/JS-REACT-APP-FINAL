@@ -52,9 +52,8 @@ export function Header() {
                 variant="h6"
                 noWrap
                 component="div"
-                sx={{ display: { xs: 'none', sm: 'block' } }}
+                sx={{ display: { xs: 'none', sm: 'block', cursor: "pointer" } }}
                 onClick={() => navigate('/my-teams/:tid')}
-                sx={{cursor: "pointer"}}
               >
                 HiGuys
               </Typography>
@@ -66,6 +65,7 @@ export function Header() {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               onClick={handleClick}
               variant="dot"
+              sx={{cursor: "pointer"}}
             >
               <Avatar alt="User Avatar" src={userData?.avatarUrl} />
             </StyledBadge>
