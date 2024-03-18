@@ -1,4 +1,3 @@
-import './App.css'
 import { useEffect, useState } from 'react'
 import { AppContext } from './context/AppContext'
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
