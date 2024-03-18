@@ -3,19 +3,19 @@ import { sendMessageToChannel } from '../services/channel-service';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import { AppContext } from '../context/AppContext';
 import SendIcon from '@mui/icons-material/Send';
-import { Button } from '@mui/material';
- 
+import { Button, Avatar } from '@mui/material';
+
 export default function ChatView({ channelTitle }) {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const { userData } = useContext(AppContext);
     const chatRef = useRef(null);
     const inputRef = useRef(null);
- 
+
     useEffect(() => {
         const db = getDatabase();
         const messagesRef = ref(db, `channels/${channelTitle}/messages`);
- 
+
         // Listen for changes in the messages node
         return onValue(messagesRef, (snapshot) => {
             const data = snapshot.val();
@@ -26,26 +26,26 @@ export default function ChatView({ channelTitle }) {
             setMessages(loadedMessages);
         });
     }, [channelTitle]);
- 
+
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (chatRef.current) {
                 chatRef.current?.scrollIntoView({ behavior: "instant" })
             }
         }, 0);
- 
+
         return () => {
             clearTimeout(timeoutId);
         };
     }, [messages]);
- 
+
     const send = async () => {
         if (message.trim() !== '') {
-            await sendMessageToChannel(channelTitle, userData?.username, message);
+            await sendMessageToChannel(channelTitle, userData?.username, message, userData?.avatarUrl);
             setMessage('');
         }
     };
- 
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '90vh', paddingTop: '20px' }} >
             <h1 style={{ marginBottom: '10px', paddingTop: '15px', textAlign: 'center' }}>{channelTitle}</h1>
@@ -62,13 +62,15 @@ export default function ChatView({ channelTitle }) {
                     >
                         <div
                             style={{
-                                display: 'inline-block',
+                                display: 'flex',
+                                alignItems: 'center',
                                 backgroundColor: '#e6e6e6',
                                 borderRadius: '10px',
                                 padding: '10px',
                                 color: 'blue',
                             }}
                         >
+                            <Avatar src={msg.avatarUrl} style={{ marginRight: '10px' }} />
                             <strong>
                                 {typeof msg.sender === 'object'
                                     ? JSON.stringify(msg.sender)
@@ -98,7 +100,7 @@ export default function ChatView({ channelTitle }) {
                     e.preventDefault(); // Prevent the form from refreshing the page
                     send();
                 }}
-                style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px',  borderTop: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}
+                style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px', borderTop: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}
             >
                 <input
                     ref={inputRef}

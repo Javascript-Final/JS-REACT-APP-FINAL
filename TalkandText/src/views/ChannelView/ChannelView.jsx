@@ -2,9 +2,9 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import { getChannelByCid, getChannelTitleByCid, sendMessageToChannel } from '../../services/channel-service';
 import { AppContext } from '../../context/AppContext';
-import { Button } from '@mui/material';
+import { Button, Avatar } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
- 
+
 export default function ChannelView({ cid }) {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
@@ -12,11 +12,11 @@ export default function ChannelView({ cid }) {
     const { userData } = useContext(AppContext);
     const chatRef = useRef(null);
     const inputRef = useRef(null);
- 
+
     useEffect(() => {
         const db = getDatabase();
         const messagesRef = ref(db, `channels/${cid}/messages`);
- 
+
         // Listen for changes in the messages node
         return onValue(messagesRef, (snapshot) => {
             const data = snapshot.val();
@@ -27,27 +27,27 @@ export default function ChannelView({ cid }) {
             setMessages(loadedMessages);
         });
     }, [cid]);
- 
+
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (chatRef.current) {
                 chatRef.current?.scrollIntoView({ behavior: "instant" })
             }
         }, 0);
- 
+
         return () => {
             clearTimeout(timeoutId);
         };
     }, [messages]);
- 
- 
+
+
     const send = async () => {
         if (message.trim() !== '') {
-            await sendMessageToChannel(cid, userData?.username, message);
+            await sendMessageToChannel(cid, userData?.username, message, userData?.avatarUrl);
             setMessage('');
         }
     }
- 
+
     useEffect(() => {
         const fetchChannelTitle = async () => {
             try {
@@ -57,10 +57,10 @@ export default function ChannelView({ cid }) {
                 console.error('Error fetching channel title:', error);
             }
         };
- 
+
         fetchChannelTitle();
     }, [cid]);
- 
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', paddingTop: '20px' }} >
             <h1 style={{ marginBottom: '10px', paddingTop: '25px', textAlign: 'center' }}>{channelTitle}</h1>
@@ -78,13 +78,15 @@ export default function ChannelView({ cid }) {
                         >
                             <div
                                 style={{
-                                    display: 'inline-block',
+                                    display: 'flex',
+                                    alignItems: 'center',
                                     backgroundColor: '#e6e6e6',
                                     borderRadius: '10px',
                                     padding: '10px',
-                                    color: 'blue', 
+                                    color: 'blue',
                                 }}
                             >
+                                <Avatar src={msg.avatarUrl} style={{ marginRight: '10px' }} />
                                 <strong>
                                     {typeof msg.sender === 'object'
                                         ? JSON.stringify(msg.sender)
