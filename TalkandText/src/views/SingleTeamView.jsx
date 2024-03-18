@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getChannelsByTid } from '../services/channel-service';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { getTeamsByUid, getTeamMembers, removeMember } from '../services/teams-services';
+import { getTeamsByUid, removeMember } from '../services/teams-services';
 import ChannelView from './ChannelView/ChannelView';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveAlt1Icon from '@mui/icons-material/PersonRemoveAlt1';
@@ -49,7 +49,6 @@ function SingleTeamView() {
 
     const tryToRemoveMember = (member) => {
         return (e) => {
-            debugger
             e.stopPropagation()
             removeMember(member, tid)
             setMembersUserData(membersUserData.filter((x) => x.username !== member.username))
@@ -69,7 +68,7 @@ function SingleTeamView() {
                 }}
             >
                 <Toolbar />
-                <Typography p={"20px"}>Channels in {team.name}</Typography>
+                <Typography fontWeight="bold" p={"20px"}>Channels in {team.name}</Typography>
                 <List>
                     <AddCircleOutlineIcon onClick={() => { navigate('/create-channel') }} sx={{ marginLeft: "16px", cursor: "pointer" }} />
                     {channels.map((channel) => (
@@ -103,7 +102,7 @@ function SingleTeamView() {
                 }}
             >
                 <Toolbar />
-                <Typography p={"20px"}>Members in {team.name}</Typography>
+                <Typography p={"20px"} fontWeight="bold">Members in {team.name}</Typography>
                 <List>
                     {loggedInAsOwner() && <>
                         <PersonAddIcon 

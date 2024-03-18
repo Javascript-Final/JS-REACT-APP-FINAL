@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { createChannel, getAllChannels } from "../services/channel-service";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
@@ -9,8 +9,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import { getOwnedTeamsFor, getTeamsByUserUid } from "../services/teams-services";
-
+import { getOwnedTeamsFor } from "../services/teams-services";
 
 export default function CreateChannel(tid) {
   const [form, setForm] = useState({
@@ -22,6 +21,7 @@ export default function CreateChannel(tid) {
   const { userData } = useContext(AppContext);
   const [userTeams, setUserTeams] = useState([]);
   const [channelExists, setChannelExists] = useState(false); // New state variable
+  const location = useLocation();
 
   useEffect(() => {
     (async () => {
@@ -68,7 +68,7 @@ export default function CreateChannel(tid) {
 
       await createChannel(form.channelTitle, form.channelPrivacy, username, form.tid);
       console.log(`Channel ${form.channelTitle} created! You are the first participant!`);
-      navigate("/");
+      navigate(`/single-team-view/${form.tid}`);
     } catch (error) {
       console.log(error.message);
     }

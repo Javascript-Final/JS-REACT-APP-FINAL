@@ -23,7 +23,6 @@ export const SingleUserProfileView = () => {
 
     useEffect(() => {
         (async () => {
-            console.log(userData);
             if (!userData) return
             setUserTeams(await getOwnedTeamsFor(userData?.username))
         })()
