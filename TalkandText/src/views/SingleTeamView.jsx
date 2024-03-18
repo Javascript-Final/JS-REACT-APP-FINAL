@@ -55,6 +55,11 @@ function SingleTeamView() {
         }
     }
 
+    const leaveTeam = async () => {
+        await removeMember(userData, tid);
+        navigate('/my-teams/:tid')
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -133,9 +138,11 @@ function SingleTeamView() {
                         </ListItem>
                     ))}
                 </List>
-                <Tooltip title="Leave Team">
-                    <RemoveCircleIcon sx={{ marginLeft: "17px", cursor: "pointer" }} />
-                </Tooltip>
+                { !loggedInAsOwner() && team?.members?.includes(userData.username) &&
+                    <Tooltip title="Leave Team">
+                        <RemoveCircleIcon sx={{ marginLeft: "17px", cursor: "pointer" }} onClick={leaveTeam} />
+                    </Tooltip>
+                }
             </Drawer>
         </Box>
     );

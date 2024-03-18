@@ -12,7 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { getOwnedTeamsFor } from '../services/teams-services';
+import { getTeamsByUserUid } from '../services/teams-services';
 import GroupIcon from '@mui/icons-material/Group';
 import SingleTeamView from './SingleTeamView';
 
@@ -33,7 +33,7 @@ export default function TeamsView() {
     (async () => {
     
       if (!userData) return;
-      const teamsData = await getOwnedTeamsFor(userData?.username);
+      const teamsData = await getTeamsByUserUid(userData?.username);
       setTeamsData(teamsData);
       setChannels(channels);
     })()
