@@ -12,7 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { getOwnedTeamsFor } from '../services/teams-services';
+import { getTeamsByUserUid } from '../services/teams-services';
 import GroupIcon from '@mui/icons-material/Group';
 import SingleTeamView from './SingleTeamView';
 
@@ -33,7 +33,7 @@ export default function TeamsView() {
     (async () => {
     
       if (!userData) return;
-      const teamsData = await getOwnedTeamsFor(userData?.username);
+      const teamsData = await getTeamsByUserUid(userData?.username);
       setTeamsData(teamsData);
       setChannels(channels);
     })()
@@ -54,8 +54,8 @@ export default function TeamsView() {
         anchor="left"
       >
         <Toolbar />
-        <Divider />
         <Typography fontWeight="bold" p={"20px"}>My Teams</Typography>
+        <Divider />
         <List>
           {teamsData.map((team) => (
             <ListItem key={team.tid} disablePadding>
@@ -77,7 +77,6 @@ export default function TeamsView() {
             </ListItem>
           ))}
         </List>
-        <Divider />
       </Drawer>
       <Box
                 component="main"
