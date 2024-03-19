@@ -136,7 +136,7 @@ function SingleTeamView() {
                                 }}
                             >
                                 <Avatar alt={`${member.firstName}'s avatar`} src={member.avatarUrl} />
-                                <ListItemText primary={member.username} />
+                                <ListItemText sx={{marginLeft: "20px"}} primary={member.username} />
                                 {loggedInAsOwner() && team.owner !== member.username &&
                                     <Tooltip title="Remove Member">
                                         <PersonRemoveAlt1Icon onClick={tryToRemoveMember(member)} />
