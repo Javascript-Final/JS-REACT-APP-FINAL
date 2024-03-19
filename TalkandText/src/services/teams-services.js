@@ -49,15 +49,15 @@ export const checkIfTeamNameExists = async (name) => {
   }
 };
 
-export const getTeamsByUserUid = async (userUid) => { // Функция, която връща екипите, в които са членове подадените потребители.
+export const getTeamsByUserUid = async (username) => { // Функция, която връща екипите, в които са членове подадените потребители.
   try {
     const snapshot = await get(ref(db, 'teams')); // Взимаме снимка на колекцията 'teams'.
 
     if (snapshot.exists()) { // Проверяваме дали снимката съществува.
-      const teamsData = Object.values(snapshot.val()); // Взимаме данните от снимката и ги преобразуваме в масив.
-      // .filter((team) =>
-      //   userUids.includes(team.uid)
-      // );
+      const teamsData = Object.values(snapshot.val()) // Взимаме данните от снимката и ги преобразуваме в масив.
+      .filter((team) =>
+        team.members.includes(username)
+      );
       return teamsData; // Връщаме масива с екипите.
     }
 
@@ -141,8 +141,11 @@ export const addMember = async (username, teamId) => {
 
 export const removeMember = async (toBeDeletedUserData, teamId) => {
   const team = await getTeamsByUid(teamId)
+
   if(team.owner === toBeDeletedUserData.username) return // Prevent deletion of team owner
+
   const newTeamMembers = team.members.filter((x) => x !== toBeDeletedUserData.username)
+
   update(ref(db), {[`teams/${teamId}/members`]: newTeamMembers})
   remove(ref(db, `users/${toBeDeletedUserData.username}/teams/${teamId}`))
 }

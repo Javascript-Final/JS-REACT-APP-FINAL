@@ -55,6 +55,13 @@ function SingleTeamView() {
         }
     }
 
+    const leaveTeam = async () => {
+        await removeMember(userData, tid);
+        navigate('/my-teams/:tid')
+    }
+
+    const loggedInAsMember = () => team?.members?.includes(userData.username)
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -90,7 +97,7 @@ function SingleTeamView() {
             <Grid container>
                 <Grid item xs={12}>
                     <Box alignContent={"center"} alignItems={"center"}>
-                        {selectedChannel && <ChannelView style={{ paddingTop: "100px" }} cid={selectedChannel} />}
+                        {selectedChannel && loggedInAsMember() && <ChannelView style={{ paddingTop: "100px" }} cid={selectedChannel} />}
                     </Box>
                 </Grid>
             </Grid>
@@ -133,9 +140,11 @@ function SingleTeamView() {
                         </ListItem>
                     ))}
                 </List>
-                <Tooltip title="Leave Team">
-                    <RemoveCircleIcon sx={{ marginLeft: "17px", cursor: "pointer" }} />
-                </Tooltip>
+                { !loggedInAsOwner() && loggedInAsMember() &&
+                    <Tooltip title="Leave Team">
+                        <RemoveCircleIcon sx={{ marginLeft: "17px", cursor: "pointer" }} onClick={leaveTeam} />
+                    </Tooltip>
+                }
             </Drawer>
         </Box>
     );
