@@ -99,8 +99,10 @@ export default function ChatView({ channelTitle }) {
 
     return (
         <Box display="flex" height="90vh">
-            <Box width="75%" display="flex" flexDirection="column" paddingTop="20px">
-                <h1 style={{ marginBottom: '10px', paddingTop: '15px', textAlign: 'center' }}>{channelTitle}</h1>
+            <Box width="75%" display="flex" flexDirection="column" paddingTop="20px" paddingLeft= "40px">
+                <h1 style={{ marginBottom: '10px', paddingTop: '15px', textAlign: 'center' }}>
+                    {userData?.firstName + " " + userData?.lastName + ", " + otherUserData?.firstName + " " + otherUserData?.lastName}
+                </h1>
                 <div style={{ overflowY: 'auto', marginBottom: '50px', flex: '1', padding: '10px', position: 'relative' }}>
 
                     {messages.map((msg) => (
@@ -146,12 +148,12 @@ export default function ChatView({ channelTitle }) {
                                 <div
                                     style={{
                                         display: 'flex',
-                                        flexDirection: 'row',
+                                        flexDirection: msg.sender === userData?.username ? 'row-reverse' : 'row',
                                         alignItems: 'center',
                                         marginBottom: '10px',
                                     }}
                                 >
-                                    <Avatar src={msg.avatarUrl} style={{ margin: '0 10px', width: '30px', height: '30px' }} />
+                                    <Avatar src={msg.avatarUrl} style={{ margin: '2px', width: '30px', height: '30px' }} />
                                     <div
                                         style={{
                                             backgroundColor: '#e6e6e6',
@@ -166,20 +168,20 @@ export default function ChatView({ channelTitle }) {
                                             : msg.text}
                                         <br />
                                         {msg.sender === userData?.username && (
-                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                        <Button
-                                            style={{ padding: '1px', minWidth: 'auto' }}
-                                            onClick={() => handleEdit(channelTitle, msg.id, msg.text)}
-                                        >
-                                            <EditIcon fontSize="small" />
-                                        </Button>
-                                        <Button
-                                            style={{ padding: '0.2px', minWidth: 'auto' }}
-                                            onClick={() => handleDelete(msg.id)}
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </Button>
-                                    </div>
+                                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                <Button
+                                                    style={{ padding: '1px', minWidth: 'auto' }}
+                                                    onClick={() => handleEdit(channelTitle, msg.id, msg.text)}
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </Button>
+                                                <Button
+                                                    style={{ padding: '1px', minWidth: '1px' }}
+                                                    onClick={() => handleDelete(msg.id)}
+                                                >
+                                                    <DeleteIcon fontSize="small" />
+                                                </Button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -188,7 +190,7 @@ export default function ChatView({ channelTitle }) {
                                 style={{
                                     fontSize: '12px',
                                     color: '#999',
-                                    marginTop: '5px',
+                                    marginTop: '2px',
                                     textAlign: msg.sender === userData?.username ? 'right' : 'left',
                                 }}
                             >
