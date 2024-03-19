@@ -1,6 +1,7 @@
 import { get, set, ref, equalTo, orderByChild, update, push, query } from "firebase/database";
 import { db } from "../config/firebase-config";
 
+
 export const getChannelByCid = (cid) => {
     return get(ref(db, `channels/${cid}`))
 };
@@ -89,6 +90,20 @@ export const sendMessageToChannel = async (channelTitle, username, message) => {
         timestamp: Date.now(),
     });
 };
+export const editMessageInChannel = async (channelTitle, messageId, updatedMessage) => {
+    try {
+        const messageRef = ref(db, `channels/${channelTitle}/messages/${messageId}`);
+
+        await update(messageRef, {
+            text: updatedMessage,
+            timestamp: Date.now(),
+        });
+    } catch (error) {
+        console.error('Error editing message:', error);
+        throw error;
+    }
+};
+
 
 export const getChannelParticipants = async (cid) => {
     if (!cid) {

@@ -1,14 +1,19 @@
-import { useState, useEffect, useContext, useRef } from 'react';
-import { getDatabase, ref, onValue } from 'firebase/database';
-import { getChannelByCid, getChannelTitleByCid, sendMessageToChannel } from '../../services/channel-service';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { getDatabase, ref, onValue, remove } from 'firebase/database';
+import { sendMessageToChannel, editMessageInChannel, getChannelTitleByCid } from '../../services/channel-service';
 import { AppContext } from '../../context/AppContext';
 import { Button } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 export default function ChannelView({ cid }) {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [channelTitle, setChannelTitle] = useState('');
+    const [editingMessageId, setEditingMessageId] = useState(null);
     const { userData } = useContext(AppContext);
     const chatRef = useRef(null);
 
@@ -41,12 +46,17 @@ export default function ChannelView({ cid }) {
     }, [messages]);
 
     const send = async () => {
-        if (message.trim() !== '') {
-            await sendMessageToChannel(cid, userData?.username, message);
-            setMessage('');
+        if (editingMessageId !== null) {
+            await editMessageInChannel(cid, editingMessageId, message);
+            setEditingMessageId(null); // Clear editing state
+        } else {
+            if (message.trim() !== '') {
+                await sendMessageToChannel(cid, userData?.username, message);
+            }
         }
+        setMessage('');
     }
-    
+
     useEffect(() => {
         const fetchChannelTitle = async () => {
             try {
@@ -59,8 +69,22 @@ export default function ChannelView({ cid }) {
 
         fetchChannelTitle();
     }, [cid]);
- 
-    
+
+    const handleEdit = (msgId, msgText) => {
+        setMessage(msgText);
+        setEditingMessageId(msgId);
+    };
+
+    const handleDelete = async (msgId) => {
+        try {
+            const db = getDatabase();
+            const messageRef = ref(db, `channels/${cid}/messages/${msgId}`);
+            await remove(messageRef);
+        } catch (error) {
+            console.error('Error deleting message:', error);
+        }
+    };
+
     return (
         <div style={{ maxHeight: "100vh", overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: '70px', paddingLeft: "70px", paddingRight: "70px" }} >
             <h1>{channelTitle}</h1>
@@ -75,25 +99,53 @@ export default function ChannelView({ cid }) {
                             marginBottom: '10px',
                         }}
                     >
-                        <div
-                            style={{
-                                display: 'inline-block',
-                                backgroundColor: '#e6e6e6',
-                                borderRadius: '10px',
-                                padding: '10px',
-                                color: 'blue', 
-                            }}
-                        >
-                            <strong>
-                                {typeof msg.sender === 'object'
-                                    ? JSON.stringify(msg.sender)
-                                    : msg.sender}
-                            </strong>
-                            :{' '}
-                            {typeof msg.text === 'object'
-                                ? JSON.stringify(msg.text)
-                                : msg.text}
-                        </div>
+                        {editingMessageId === msg.id ? (
+                            <div>
+                                <input
+                                    type="text"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    style={{ flex: '1', marginRight: '10px',
+                                     backgroundColor: "white",
+                                      color: "black",
+                                      borderRadius: "5px",
+                                        padding: "5px",
+                                        border: "1px solid #ddd",
+                                        width: "300px",
+                                        height: "30px",
+                                        fontFamily: "Arial",
+                                        fontSize: "15px",
+                                    }}
+                                />
+                                <Button onClick={send} startIcon={<SaveIcon />} /> 
+                            </div>
+                        ) : (
+                            <div
+                                style={{
+                                    display: 'inline-block',
+                                    backgroundColor: '#e6e6e6',
+                                    borderRadius: '10px',
+                                    padding: '10px',
+                                    color: 'blue', 
+                                }}
+                            >
+                                <strong>
+                                    {typeof msg.sender === 'object'
+                                        ? JSON.stringify(msg.sender)
+                                        : msg.sender}
+                                </strong>
+                                :{' '}
+                                {typeof msg.text === 'object'
+                                    ? JSON.stringify(msg.text)
+                                    : msg.text}
+                                {msg.sender === userData?.username && (
+                                    <>
+                                        <Button onClick={() => handleEdit(msg.id, msg.text)}><EditIcon /></Button>
+                                        <Button onClick={() => handleDelete(msg.id)}><DeleteIcon /></Button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                         <div
                             style={{
                                 fontSize: '12px',

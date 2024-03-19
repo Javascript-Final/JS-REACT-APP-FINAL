@@ -1,13 +1,17 @@
 import { useState, useEffect, useContext, useRef } from 'react';
-import { sendMessageToChannel } from '../services/channel-service';
-import { getDatabase, ref, onValue } from 'firebase/database';
+import { sendMessageToChannel, editMessageInChannel } from '../services/channel-service';
+import { getDatabase, ref, onValue, update, remove } from 'firebase/database';
 import { AppContext } from '../context/AppContext';
 import SendIcon from '@mui/icons-material/Send';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 
 export default function ChatView({ channelTitle }) {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [editingMessageId, setEditingMessageId] = useState(null);
     const { userData } = useContext(AppContext);
     const chatRef = useRef(null);
 
@@ -15,8 +19,7 @@ export default function ChatView({ channelTitle }) {
         const db = getDatabase();
         const messagesRef = ref(db, `channels/${channelTitle}/messages`);
 
-        // Listen for changes in the messages node
-      return onValue(messagesRef, (snapshot) => {
+        return onValue(messagesRef, (snapshot) => {
             const data = snapshot.val();
             const loadedMessages = [];
             for (const id in data) {
@@ -33,16 +36,39 @@ export default function ChatView({ channelTitle }) {
             }
         }, 0);
 
-        // Cleanup function
         return () => {
             clearTimeout(timeoutId);
         };
     }, [messages]);
 
     const send = async () => {
-        if (message.trim() !== '') {
-            await sendMessageToChannel(channelTitle, userData?.username, message);
-            setMessage('');
+        if (editingMessageId !== null) {
+            await editMessageInChannel(channelTitle, editingMessageId, message);
+            setEditingMessageId(null);
+        } else {
+            if (message.trim() !== '') {
+                await sendMessageToChannel(channelTitle, userData?.username, message);
+            }
+        }
+        setMessage('');
+    };
+
+    const handleEdit = (msgId, msgText) => {
+        setMessage(msgText);
+        setEditingMessageId(msgId);
+    };
+
+    const handleSave = () => {
+        send();
+    };
+
+    const handleDelete = async (msgId) => {
+        try {
+            const db = getDatabase();
+            const messageRef = ref(db, `channels/${channelTitle}/messages/${msgId}`);
+            await remove(messageRef);
+        } catch (error) {
+            console.error('Error deleting message:', error);
         }
     };
 
@@ -60,25 +86,54 @@ export default function ChatView({ channelTitle }) {
                             marginBottom: '10px',
                         }}
                     >
-                        <div
-                            style={{
-                                display: 'inline-block',
-                                backgroundColor: '#e6e6e6',
-                                borderRadius: '10px',
-                                padding: '10px',
-                                color: 'blue', 
-                            }}
-                        >
-                            <strong>
-                                {typeof msg.sender === 'object'
-                                    ? JSON.stringify(msg.sender)
-                                    : msg.sender}
-                            </strong>
-                            :{' '}
-                            {typeof msg.text === 'object'
-                                ? JSON.stringify(msg.text)
-                                : msg.text}
-                        </div>
+                        {editingMessageId === msg.id ? (
+                            <div>
+                                <input
+                                    type="text"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    style={{ flex: '1', marginRight: '10px',
+                                     backgroundColor: "white",
+                                      color: "black",
+                                      borderRadius: "5px",
+                                        padding: "5px",
+                                        border: "1px solid #ddd",
+                                        width: "300px",
+                                        height: "30px",
+                                        fontFamily: "Arial",
+                                        fontSize: "15px",
+                                    }}
+                                />
+                                
+                                <Button onClick={handleSave} startIcon={<SaveIcon />} /> 
+                            </div>
+                        ) : (
+                            <div
+                                style={{
+                                    display: 'inline-block',
+                                    backgroundColor: '#e6e6e6',
+                                    borderRadius: '10px',
+                                    padding: '10px',
+                                    color: 'blue', 
+                                }}
+                            >
+                                <strong>
+                                    {typeof msg.sender === 'object'
+                                        ? JSON.stringify(msg.sender)
+                                        : msg.sender}
+                                </strong>
+                                :{' '}
+                                {typeof msg.text === 'object'
+                                    ? JSON.stringify(msg.text)
+                                    : msg.text}
+                                {msg.sender === userData?.username && ( 
+                                    <>
+                                        <Button onClick={() => handleEdit(msg.id, msg.text)}><EditIcon /></Button>
+                                        <Button onClick={() => handleDelete(msg.id)}><DeleteIcon /></Button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                         <div
                             style={{
                                 fontSize: '12px',
@@ -106,7 +161,7 @@ export default function ChatView({ channelTitle }) {
                     onChange={(e) => setMessage(e.target.value)}
                     style={{ flex: '1', marginRight: '10px', backgroundColor: "white", color: "black" }}
                 />
-                    <Button type="submit" startIcon={<SendIcon />}></Button>
+                <Button type="submit" startIcon={<SendIcon />}></Button>
             </form>
         </div>
     );
