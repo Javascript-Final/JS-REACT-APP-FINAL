@@ -48,6 +48,7 @@ export default function ChatView({ channelTitle }) {
   const handleEdit = (channelTitle, msgId, msgText) => {
         editMessageInChannel(channelTitle, msgId, msgText);
         setEditingMessageId(msgId);
+        setEditedMessage(msgText);
     };
   
    const send = async () => {
@@ -61,7 +62,7 @@ export default function ChatView({ channelTitle }) {
  const edit = async () => {
 
     if (editingMessageId !== null) {
-        await editMessageInChannel(channelTitle, editingMessageId, message);
+        await editMessageInChannel(channelTitle, editingMessageId, editedMessage);
         setEditingMessageId(null);
         setMessage('') // Clear editing state
     }  
@@ -102,8 +103,8 @@ export default function ChatView({ channelTitle }) {
                                     <input
                                         ref={inputRef}
                                         type="text"
-                                         value={message}
-                                         onChange={(e) => setMessage(e.target.value)}
+                                        defaultValue={editedMessage}
+                                        onChange={(e) => setEditedMessage(e.target.value)}
                                         style={{
                                             flex: '1',
                                             marginRight: '10px',

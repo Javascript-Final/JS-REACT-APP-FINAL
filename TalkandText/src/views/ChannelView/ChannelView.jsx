@@ -48,11 +48,11 @@ export default function ChannelView({ cid }) {
 
 
     const send = async () => {
- 
+
 
         if (message.trim() !== '') {
             await sendMessageToChannel(cid, userData?.username, message, userData?.avatarUrl);
-             setMessage('');
+            setMessage('');
         }
     }
 
@@ -69,21 +69,20 @@ export default function ChannelView({ cid }) {
         fetchChannelTitle();
     }, [cid]);
 
-const edit = async () => {
+    const edit = async () => {
 
-    if (editingMessageId !== null) {
-        await editMessageInChannel(cid, editingMessageId, message);
-        console.log( editingMessageId);
-        setEditingMessageId(null);
-        setMessage('') // Clear editing state
-    }  
-};
-
-
+        if (editingMessageId !== null) {
+            await editMessageInChannel(cid, editingMessageId, editedMessage);
+            console.log(editingMessageId);
+            setEditingMessageId(null);
+            setMessage('') // Clear editing state
+        }
+    };
 
     const handleEdit = (cid, msgId, msgText) => {
         editMessageInChannel(cid, msgId, msgText);
         setEditingMessageId(msgId);
+        setEditedMessage(msgText);
     };
 
     const handleDelete = async (msgId) => {
@@ -116,8 +115,8 @@ const edit = async () => {
                                     <input
                                         ref={inputRef}
                                         type="text"
-                                         value={message}
-                                         onChange={(e) => setMessage(e.target.value)}
+                                        defaultValue={editedMessage}
+                                        onChange={(e) => setEditedMessage(e.target.value)}
                                         style={{
                                             flex: '1',
                                             marginRight: '10px',
@@ -162,10 +161,10 @@ const edit = async () => {
                                         {typeof msg.text === 'object'
                                             ? JSON.stringify(msg.text)
                                             : msg.text}
-                                            <br/>
+                                        <br />
                                         {msg.sender === userData?.username && (
                                             <>
-                                                <Button onClick={() => handleEdit(cid ,msg.id, msg.text)}><EditIcon /></Button>
+                                                <Button onClick={() => handleEdit(cid, msg.id, msg.text)}><EditIcon /></Button>
                                                 <Button onClick={() => handleDelete(msg.id)}><DeleteIcon /></Button>
                                             </>
                                         )}
