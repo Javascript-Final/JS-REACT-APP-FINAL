@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Grid, ListItemText, ListItemButton, Box, Drawer, CssBaseline, Toolbar, List, Typography, ListItem, Avatar, Tooltip } from '@mui/material';
+import { Grid, ListItemText, ListItemButton, Box, Drawer, CssBaseline, Toolbar, List, Typography, ListItem, Avatar, Tooltip, Divider } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getChannelsByTid } from '../services/channel-service';
@@ -55,6 +55,13 @@ function SingleTeamView() {
         }
     }
 
+    const leaveTeam = async () => {
+        await removeMember(userData, tid);
+        navigate('/my-teams/:tid')
+    }
+
+    const loggedInAsMember = () => team?.members?.includes(userData.username)
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -69,6 +76,7 @@ function SingleTeamView() {
             >
                 <Toolbar />
                 <Typography fontWeight="bold" p={"20px"}>Channels in {team.name}</Typography>
+                <Divider />
                 <List>
                     <Tooltip title="Create Channel">
                         <AddCircleOutlineIcon onClick={() => { navigate('/create-channel') }} sx={{ marginLeft: "16px", cursor: "pointer" }} />
@@ -90,7 +98,7 @@ function SingleTeamView() {
             <Grid container>
                 <Grid item xs={12}>
                     <Box alignContent={"center"} alignItems={"center"}>
-                        {selectedChannel && <ChannelView style={{ paddingTop: "100px" }} cid={selectedChannel} />}
+                        {selectedChannel && loggedInAsMember() && <ChannelView style={{ paddingTop: "100px" }} cid={selectedChannel} />}
                     </Box>
                 </Grid>
             </Grid>
@@ -105,6 +113,7 @@ function SingleTeamView() {
             >
                 <Toolbar />
                 <Typography p={"20px"} fontWeight="bold">Members in {team.name}</Typography>
+                <Divider />
                 <List>
                     {loggedInAsOwner() && <>
                         <Tooltip title="Add Member">
@@ -133,9 +142,11 @@ function SingleTeamView() {
                         </ListItem>
                     ))}
                 </List>
-                <Tooltip title="Leave Team">
-                    <RemoveCircleIcon sx={{ marginLeft: "17px", cursor: "pointer" }} />
-                </Tooltip>
+                { !loggedInAsOwner() && loggedInAsMember() &&
+                    <Tooltip title="Leave Team">
+                        <RemoveCircleIcon sx={{ marginLeft: "17px", cursor: "pointer" }} onClick={leaveTeam} />
+                    </Tooltip>
+                }
             </Drawer>
         </Box>
     );

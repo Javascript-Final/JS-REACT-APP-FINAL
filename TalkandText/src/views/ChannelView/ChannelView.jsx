@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { getDatabase, ref, onValue, remove } from 'firebase/database';
 import { sendMessageToChannel, editMessageInChannel, getChannelTitleByCid } from '../../services/channel-service';
 import { AppContext } from '../../context/AppContext';
-import { Button } from '@mui/material';
+import { Button, Avatar } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,8 +14,10 @@ export default function ChannelView({ cid }) {
     const [messages, setMessages] = useState([]);
     const [channelTitle, setChannelTitle] = useState('');
     const [editingMessageId, setEditingMessageId] = useState(null);
+    const [editedMessage, setEditedMessage] = useState('');
     const { userData } = useContext(AppContext);
     const chatRef = useRef(null);
+    const inputRef = useRef(null);
 
     useEffect(() => {
         const db = getDatabase();
@@ -35,26 +37,23 @@ export default function ChannelView({ cid }) {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (chatRef.current) {
-                chatRef.current.scrollTop = chatRef.current.scrollHeight;
+                chatRef.current?.scrollIntoView({ behavior: "instant" })
             }
         }, 0);
 
-        // Cleanup function
         return () => {
             clearTimeout(timeoutId);
         };
     }, [messages]);
 
+
     const send = async () => {
-        if (editingMessageId !== null) {
-            await editMessageInChannel(cid, editingMessageId, message);
-            setEditingMessageId(null); // Clear editing state
-        } else {
-            if (message.trim() !== '') {
-                await sendMessageToChannel(cid, userData?.username, message);
-            }
+ 
+
+        if (message.trim() !== '') {
+            await sendMessageToChannel(cid, userData?.username, message, userData?.avatarUrl);
+             setMessage('');
         }
-        setMessage('');
     }
 
     useEffect(() => {
@@ -70,8 +69,20 @@ export default function ChannelView({ cid }) {
         fetchChannelTitle();
     }, [cid]);
 
-    const handleEdit = (msgId, msgText) => {
-        setMessage(msgText);
+const edit = async () => {
+
+    if (editingMessageId !== null) {
+        await editMessageInChannel(cid, editingMessageId, message);
+        console.log( editingMessageId);
+        setEditingMessageId(null);
+        setMessage('') // Clear editing state
+    }  
+};
+
+
+
+    const handleEdit = (cid, msgId, msgText) => {
+        editMessageInChannel(cid, msgId, msgText);
         setEditingMessageId(msgId);
     };
 
@@ -86,94 +97,112 @@ export default function ChannelView({ cid }) {
     };
 
     return (
-        <div style={{ maxHeight: "100vh", overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingTop: '70px', paddingLeft: "70px", paddingRight: "70px" }} >
-            <h1>{channelTitle}</h1>
-            <div ref={chatRef} style={{ flex: '1', overflowY: 'auto', marginBottom: 'auto' }}>
-                {messages.map((msg) => (
-                    <div
-                        key={msg.id}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: msg.sender === userData?.username ? 'flex-end' : 'flex-start',
-                            marginBottom: '10px',
-                        }}
-                    >
-                        {editingMessageId === msg.id ? (
-                            <div>
-                                <input
-                                    type="text"
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    style={{ flex: '1', marginRight: '10px',
-                                     backgroundColor: "white",
-                                      color: "black",
-                                      borderRadius: "5px",
-                                        padding: "5px",
-                                        border: "1px solid #ddd",
-                                        width: "300px",
-                                        height: "30px",
-                                        fontFamily: "Arial",
-                                        fontSize: "15px",
-                                    }}
-                                />
-                                <Button onClick={send} startIcon={<SaveIcon />} /> 
-                            </div>
-                        ) : (
-                            <div
-                                style={{
-                                    display: 'inline-block',
-                                    backgroundColor: '#e6e6e6',
-                                    borderRadius: '10px',
-                                    padding: '10px',
-                                    color: 'blue', 
-                                }}
-                            >
-                                <strong>
-                                    {typeof msg.sender === 'object'
-                                        ? JSON.stringify(msg.sender)
-                                        : msg.sender}
-                                </strong>
-                                :{' '}
-                                {typeof msg.text === 'object'
-                                    ? JSON.stringify(msg.text)
-                                    : msg.text}
-                                {msg.sender === userData?.username && (
-                                    <>
-                                        <Button onClick={() => handleEdit(msg.id, msg.text)}><EditIcon /></Button>
-                                        <Button onClick={() => handleDelete(msg.id)}><DeleteIcon /></Button>
-                                    </>
-                                )}
-                            </div>
-                        )}
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', paddingTop: '20px' }} >
+            <h1 style={{ marginBottom: '10px', paddingTop: '25px', textAlign: 'center' }}>{channelTitle}</h1>
+            <div style={{ flex: '1', overflowY: 'auto', padding: '10px', position: 'relative' }}>
+                <div style={{ overflowY: 'auto', marginBottom: '50px' }}>
+                    {messages.map((msg) => (
                         <div
+                            key={msg.id}
                             style={{
-                                fontSize: '12px',
-                                color: '#999',
-                                marginTop: '5px',
-                                textAlign: msg.sender === userData?.username ? 'right' : 'left',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: msg.sender === userData?.username ? 'flex-end' : 'flex-start',
+                                marginBottom: '10px',
                             }}
                         >
-                            {new Date(msg.timestamp).toLocaleString()}
+                            {editingMessageId === msg.id ? (
+                                <div>
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                         value={message}
+                                         onChange={(e) => setMessage(e.target.value)}
+                                        style={{
+                                            flex: '1',
+                                            marginRight: '10px',
+                                            backgroundColor: "white",
+                                            color: "black",
+                                            borderRadius: "5px",
+                                            padding: "5px",
+                                            border: "1px solid #ddd",
+                                            width: "300px",
+                                            height: "30px",
+                                            fontFamily: "Arial",
+                                            fontSize: "15px",
+                                        }}
+                                    />
+                                    <Button onClick={edit} startIcon={<SaveIcon />} />
+                                </div>
+                            ) : (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        marginBottom: '10px',
+                                    }}
+                                >
+                                    <Avatar src={msg.avatarUrl} style={{ margin: '0 10px', width: '30px', height: '30px' }} />
+                                    <div
+                                        style={{
+                                            backgroundColor: '#e6e6e6',
+                                            borderRadius: '10px',
+                                            padding: '10px',
+                                            color: 'black',
+                                            fontSize: '16px',
+                                        }}
+                                    >
+                                        <strong>
+                                            {typeof msg.sender === 'object'
+                                                ? JSON.stringify(msg.sender)
+                                                : msg.sender}
+                                        </strong>
+                                        :{' '}
+                                        {typeof msg.text === 'object'
+                                            ? JSON.stringify(msg.text)
+                                            : msg.text}
+                                            <br/>
+                                        {msg.sender === userData?.username && (
+                                            <>
+                                                <Button onClick={() => handleEdit(cid ,msg.id, msg.text)}><EditIcon /></Button>
+                                                <Button onClick={() => handleDelete(msg.id)}><DeleteIcon /></Button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            <div
+                                style={{
+                                    fontSize: '12px',
+                                    color: '#999',
+                                    marginTop: '5px',
+                                    textAlign: msg.sender === userData?.username ? 'right' : 'left',
+                                }}
+                            >
+                                {new Date(msg.timestamp).toLocaleString()}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                    <div ref={chatRef} />
+                </div>
             </div>
             <form
                 onSubmit={(e) => {
                     e.preventDefault(); // Prevent the form from refreshing the page
                     send();
                 }}
-                style={{ padding: '10px', borderTop: '1px solid #ddd', display: 'flex' }}
+                style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '10px', borderTop: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}
             >
                 <input
+                    ref={inputRef}
                     type="text"
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    style={{ flex: '1', marginRight: '10px', backgroundColor: "white", color: "black" }}
+                    style={{ flex: '0.8', maxWidth: '600px', marginRight: '10px', backgroundColor: "white", color: "black", height: '30px', borderRadius: '5px', padding: '5px' }}
                 />
-                <Button type="submit" startIcon={<SendIcon />}></Button>
+                <Button type="submit" startIcon={<SendIcon />} variant="contained" color="primary" style={{ height: '30px' }}>Send</Button>
             </form>
         </div>
     );

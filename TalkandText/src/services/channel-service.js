@@ -75,7 +75,7 @@ export const getChannelTitleByCid = async (cid) => {
 };
 
 
-export const sendMessageToChannel = async (channelTitle, username, message) => {
+export const sendMessageToChannel = async (channelTitle, username, message, avatarUrl) => {
 
     // Create a reference to the messages in the channel
     const messagesRef = ref(db, `channels/${channelTitle}/messages`);
@@ -87,6 +87,7 @@ export const sendMessageToChannel = async (channelTitle, username, message) => {
     await set(newMessageRef, {
         sender: username,
         text: message,
+        avatarUrl: avatarUrl,
         timestamp: Date.now(),
     });
 };
