@@ -1,12 +1,17 @@
-    import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { sendMessageToChannel, editMessageInChannel } from '../services/channel-service';
 import { getDatabase, ref, onValue, update, remove } from 'firebase/database';
 import { AppContext } from '../context/AppContext';
 import SendIcon from '@mui/icons-material/Send';
+import { getUserByHandle } from '../services/user-service';
+import { Button, Box, Avatar, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, Avatar } from '@mui/material';
+
 
 export default function ChatView({ channelTitle }) {
     const [message, setMessage] = useState('');
@@ -16,6 +21,7 @@ export default function ChatView({ channelTitle }) {
     const { userData } = useContext(AppContext);
     const chatRef = useRef(null);
     const inputRef = useRef(null);
+    const [otherUserData, setOtherUserData] = useState(null);
 
     useEffect(() => {
         const db = getDatabase();
@@ -43,7 +49,20 @@ export default function ChatView({ channelTitle }) {
         };
     }, [messages]);
 
- 
+
+    useEffect(() => {
+        const fetchOtherUserData = async () => {
+            if (!otherUserData) {
+                const usernames = channelTitle.split('+'); // Replace '-' with the character or string that separates the usernames
+                const otherUsername = usernames.find(username => username !== userData?.username);
+                const snapshot = await getUserByHandle(otherUsername);
+                setOtherUserData(snapshot);
+
+            }
+        };
+
+        fetchOtherUserData();
+    }, [channelTitle]);
 
   const handleEdit = (channelTitle, msgId, msgText) => {
         editMessageInChannel(channelTitle, msgId, msgText);
@@ -52,7 +71,6 @@ export default function ChatView({ channelTitle }) {
     };
   
    const send = async () => {
- 
         if (message.trim() !== '') {
             await sendMessageToChannel(channelTitle, userData?.username, message, userData?.avatarUrl);
              setMessage('');
@@ -76,18 +94,14 @@ export default function ChatView({ channelTitle }) {
         } catch (error) {
             console.error('Error deleting message:', error);
         }
-        if (message.trim() !== '') {
-            await sendMessageToChannel(channelTitle, userData?.username, message, userData?.avatarUrl);
-            setMessage('');
 
-        }
-    }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', paddingTop: '20px' }} >
-            <h1 style={{ marginBottom: '10px', paddingTop: '25px', textAlign: 'center' }}>{channelTitle}</h1>
-            <div style={{ flex: '1', overflowY: 'auto', padding: '10px', position: 'relative' }}>
-                <div style={{ overflowY: 'auto', marginBottom: '50px' }}>
+        <Box display="flex" height="90vh">
+            <Box width="75%" display="flex" flexDirection="column" paddingTop="20px">
+                <h1 style={{ marginBottom: '10px', paddingTop: '15px', textAlign: 'center' }}>{channelTitle}</h1>
+                <div style={{ overflowY: 'auto', marginBottom: '50px', flex: '1', padding: '10px', position: 'relative' }}>
+
                     {messages.map((msg) => (
                         <div
                             key={msg.id}
@@ -173,25 +187,59 @@ export default function ChatView({ channelTitle }) {
                     ))}
                     <div ref={chatRef} />
                 </div>
-            </div>
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault(); // Prevent the form from refreshing the page
-                    send();
-                }}
-                style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '10px', borderTop: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}
-            >
-                <input
-                    ref={inputRef}
-                    type="text"
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    style={{ flex: '0.8', maxWidth: '600px', marginRight: '10px', backgroundColor: "white", color: "black", height: '30px', borderRadius: '5px', padding: '5px' }}
-                />
-                <Button type="submit" startIcon={<SendIcon />} variant="contained" color="primary" style={{ height: '30px' }}>Send</Button>
-            </form>
-        </div>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault(); // Prevent the form from refreshing the page
+                        send();
+                    }}
+                    style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px', paddingLeft: '50px', borderTop: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'left', background: 'white' }}
+                >
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        id="message"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        style={{ flex: '1', maxWidth: '800px', marginRight: '10px', backgroundColor: "white", color: "black", height: '30px', borderRadius: '5px', padding: '5px' }}
+                    />
+                    <Button type="submit" startIcon={<SendIcon />} variant="contained" color="primary">Send</Button>
+                </form>
+            </Box>
+            <Drawer anchor='right' variant="permanent" sx={{ width: '25%' }}>
+                <div
+                    role="presentation"
+                    style={{ paddingTop: '50px' }} // Add this line
+                >
+                    <List>
+                        <Box display="flex" justifyContent="center" alignItems="center" paddingTop="25px">
+                            <Avatar
+                                src={otherUserData?.avatarUrl}
+                                sx={{ width: 120, height: 120 }} // Increase avatar size here
+                            />
+                        </Box>
+                        <ListItem>
+                            <ListItem>
+                                <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
+                                    {otherUserData?.firstName + " " + otherUserData?.lastName}
+                                </Typography>
+                            </ListItem>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemIcon><AccountCircleIcon /></ListItemIcon>
+                            <ListItemText primary={otherUserData?.username} />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemIcon><EmailIcon /></ListItemIcon>
+                            <ListItemText primary={otherUserData?.email} />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemIcon><PhoneIcon /></ListItemIcon>
+                            <ListItemText primary={otherUserData?.phoneNumber} />
+                        </ListItem>
+                    </List>
+                </div>
+            </Drawer>
+        </Box>
     );
 };
 
