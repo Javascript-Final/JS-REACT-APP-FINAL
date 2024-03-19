@@ -23,7 +23,7 @@ export const createUserHandle = async (firstName, lastName, username, uid, email
     email,
     phoneNumber,
     teams,
-    avatarUrl: "https://p7.hiclipart.com/preview/962/225/162/gloria-alex-melman-skipper-madagascar-madagascar.jpg",
+    avatarUrl: "https://www.pngall.com/wp-content/uploads/15/King-Julien.png",
   })
 };
 
