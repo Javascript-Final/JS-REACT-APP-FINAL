@@ -74,7 +74,7 @@ export default function CreateChannel(tid) {
       setSuccessMessage(true);
       setTimeout(() => {
       navigate(`/single-team-view/${form.tid}`);
-      }, 3000);
+      }, 2000);
     } catch (error) {
       console.error(error.message);
     }

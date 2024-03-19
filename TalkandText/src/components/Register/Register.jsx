@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { registerUser } from "../../services/auth-service";
 import { createUserHandle } from "../../services/user-service";
-import { getUserByHandle } from "../../services/user-service";
+import { getUserByHandleSnapshot } from "../../services/user-service";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
@@ -61,7 +61,7 @@ export default function Register({ switchComponent }) {
     }
 
     try {
-      const user = await getUserByHandle(form.handle);
+      const user = await getUserByHandleSnapshot(form.handle);
       if (user.exists()) {
         console.log(user.val());
         return console.log(

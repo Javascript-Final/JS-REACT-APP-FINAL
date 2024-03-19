@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getUserByHandle } from '../../services/user-service';
+import { getUserByHandleSnapshot } from '../../services/user-service';
 import { ref, push } from 'firebase/database';
 import { db } from '../../config/firebase-config';
 import { addTeamMember } from '../../services/teams-services';
@@ -23,7 +23,7 @@ import { AppContext } from '../../context/AppContext';
         addTeamMember(userToAdd, teamUid);
     }, [userToAdd, teamUid]);
    
-    const user = getUserByHandle(userToAdd);
+    const user = getUserByHandleSnapshot(userToAdd);
    
   
         try {

@@ -50,7 +50,7 @@ export const AddMemberInTeamView = () => {
             setMemberAddedSuccess(true);
             setTimeout(() => {
             navigate(`../single-team-view/${tid}`);
-            }, 3000);
+            }, 2000);
         } catch (error) {
             console.error('Error adding member:', error);
             // Handle error

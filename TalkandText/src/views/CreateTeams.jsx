@@ -44,11 +44,11 @@ function CreateTeams() {
       }
 
       const newTeam = await createTeam(teamName, userData.uid, usersToAdd);
-      const teamData = await getTeamsByUid(newTeam);
+      // const teamData = await getTeamsByUid(newTeam);
       setSuccessMessage(true);
       setTimeout(() => {
         navigate(`/single-team-view/${newTeam}`);
-      }, 3000);
+      }, 2000);
     } catch (error) {
       console.error('Error creating team:', error);
     }
