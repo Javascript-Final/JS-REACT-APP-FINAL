@@ -64,27 +64,27 @@ export default function ChatView({ channelTitle }) {
         fetchOtherUserData();
     }, [channelTitle]);
 
-  const handleEdit = (channelTitle, msgId, msgText) => {
+    const handleEdit = (channelTitle, msgId, msgText) => {
         editMessageInChannel(channelTitle, msgId, msgText);
         setEditingMessageId(msgId);
         setEditedMessage(msgText);
     };
-  
-   const send = async () => {
+
+    const send = async () => {
         if (message.trim() !== '') {
             await sendMessageToChannel(channelTitle, userData?.username, message, userData?.avatarUrl);
-             setMessage('');
+            setMessage('');
         }
     }
 
- const edit = async () => {
+    const edit = async () => {
 
-    if (editingMessageId !== null) {
-        await editMessageInChannel(channelTitle, editingMessageId, editedMessage);
-        setEditingMessageId(null);
-        setMessage('') // Clear editing state
-    }  
-};
+        if (editingMessageId !== null) {
+            await editMessageInChannel(channelTitle, editingMessageId, editedMessage);
+            setEditingMessageId(null);
+            setMessage('') // Clear editing state
+        }
+    };
 
     const handleDelete = async (msgId) => {
         try {
@@ -94,6 +94,7 @@ export default function ChatView({ channelTitle }) {
         } catch (error) {
             console.error('Error deleting message:', error);
         }
+    }
 
 
     return (
@@ -112,6 +113,12 @@ export default function ChatView({ channelTitle }) {
                                 marginBottom: '10px',
                             }}
                         >
+                            <strong>
+                                {typeof msg.sender === 'object'
+                                    ? JSON.stringify(msg.sender)
+                                    : msg.sender}
+                            </strong>
+
                             {editingMessageId === msg.id ? (
                                 <div>
                                     <input
@@ -154,21 +161,25 @@ export default function ChatView({ channelTitle }) {
                                             fontSize: '16px',
                                         }}
                                     >
-                                        <strong>
-                                            {typeof msg.sender === 'object'
-                                                ? JSON.stringify(msg.sender)
-                                                : msg.sender}
-                                        </strong>
-                                        :{' '}
                                         {typeof msg.text === 'object'
                                             ? JSON.stringify(msg.text)
                                             : msg.text}
-                                            <br/>
+                                        <br />
                                         {msg.sender === userData?.username && (
-                                            <>
-                                                <Button onClick={() => handleEdit(channelTitle ,msg.id, msg.text)}><EditIcon /></Button>
-                                                <Button onClick={() => handleDelete(msg.id)}><DeleteIcon /></Button>
-                                            </>
+                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <Button
+                                            style={{ padding: '1px', minWidth: 'auto' }}
+                                            onClick={() => handleEdit(channelTitle, msg.id, msg.text)}
+                                        >
+                                            <EditIcon fontSize="small" />
+                                        </Button>
+                                        <Button
+                                            style={{ padding: '0.2px', minWidth: 'auto' }}
+                                            onClick={() => handleDelete(msg.id)}
+                                        >
+                                            <DeleteIcon fontSize="small" />
+                                        </Button>
+                                    </div>
                                         )}
                                     </div>
                                 </div>
@@ -242,5 +253,3 @@ export default function ChatView({ channelTitle }) {
         </Box>
     );
 };
-
-

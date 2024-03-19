@@ -1,11 +1,16 @@
 import { get, set, ref, query, equalTo, orderByChild, update } from "firebase/database";
 import { db } from "../config/firebase-config";
 
-export const getUserByHandle = (handle) => {
+export const getUserByHandle = async (handle) => {
   const userRef = ref(db, `users/${handle}`);
   return get(userRef).then((snapshot) => {
     return snapshot.val();
   });
+};
+
+export const getUserByHandleSnapshot = (handle) => {
+  const userRef = ref(db, `users/${handle}`);
+  return get(userRef);
 };
 
 export const createUserHandle = async (firstName, lastName, username, uid, email, phoneNumber, teams = []) => {

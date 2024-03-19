@@ -9,7 +9,7 @@ import ChannelView from './ChannelView/ChannelView';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveAlt1Icon from '@mui/icons-material/PersonRemoveAlt1';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import { getUserByHandle } from '../services/user-service';
+import { getUserByHandleSnapshot } from '../services/user-service';
 import { AppContext } from '../context/AppContext';
 
 function SingleTeamView() {
@@ -29,7 +29,7 @@ function SingleTeamView() {
         if (typeof cid !== 'undefined') {
             setSelectedChannel(cid)
         }
-
+    
         (async () => {
             const team = await getTeamsByUid(tid);
             setTeam(team)
@@ -37,8 +37,11 @@ function SingleTeamView() {
             setChannels(channels)
             const members = team.members;
             setMembersInTeam(members)
-            const memberCalls = (await Promise.all(members.map(async (memberName) => (await getUserByHandle(memberName)))))
-            const memberUserData = memberCalls.map((snapshot) => snapshot.val())
+            const memberCalls = await Promise.all(members.map(async (memberName) => {
+                const userSnapshot = await getUserByHandleSnapshot(memberName);
+                return userSnapshot ? userSnapshot : null;
+            }));
+            const memberUserData = memberCalls.filter(Boolean).map((snapshot) => snapshot.val())
             setMembersUserData(memberUserData)
         })()
     }, [tid, cid]);
