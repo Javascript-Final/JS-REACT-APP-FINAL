@@ -54,8 +54,8 @@ export default function TeamsView() {
         anchor="left"
       >
         <Toolbar />
-        <Divider />
         <Typography fontWeight="bold" p={"20px"}>My Teams</Typography>
+        <Divider />
         <List>
           {teamsData.map((team) => (
             <ListItem key={team.tid} disablePadding>
@@ -77,7 +77,6 @@ export default function TeamsView() {
             </ListItem>
           ))}
         </List>
-        <Divider />
       </Drawer>
       <Box
                 component="main"

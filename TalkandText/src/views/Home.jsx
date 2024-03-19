@@ -71,7 +71,7 @@ function Home() {
                       textAlign: "center"
                     }}
                   >
-                    The modern app for collaboration in the workplace.
+                    The modern app for collaboration in the workplace
                   </Typography>
                 </Grid>
               </Grid>
