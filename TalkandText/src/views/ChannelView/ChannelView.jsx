@@ -110,6 +110,11 @@ export default function ChannelView({ cid }) {
                                 marginBottom: '10px',
                             }}
                         >
+                            <strong>
+                                {typeof msg.sender === 'object'
+                                    ? JSON.stringify(msg.sender)
+                                    : msg.sender}
+                            </strong>
                             {editingMessageId === msg.id ? (
                                 <div>
                                     <input
@@ -137,7 +142,7 @@ export default function ChannelView({ cid }) {
                                 <div
                                     style={{
                                         display: 'flex',
-                                        flexDirection: 'row',
+                                        flexDirection: msg.sender === userData?.username ? 'row-reverse' : 'row',
                                         alignItems: 'center',
                                         marginBottom: '10px',
                                     }}
@@ -152,21 +157,25 @@ export default function ChannelView({ cid }) {
                                             fontSize: '16px',
                                         }}
                                     >
-                                        <strong>
-                                            {typeof msg.sender === 'object'
-                                                ? JSON.stringify(msg.sender)
-                                                : msg.sender}
-                                        </strong>
-                                        :{' '}
                                         {typeof msg.text === 'object'
                                             ? JSON.stringify(msg.text)
                                             : msg.text}
                                         <br />
                                         {msg.sender === userData?.username && (
-                                            <>
-                                                <Button onClick={() => handleEdit(cid, msg.id, msg.text)}><EditIcon /></Button>
-                                                <Button onClick={() => handleDelete(msg.id)}><DeleteIcon /></Button>
-                                            </>
+                                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Button
+                                                style={{ padding: '1px', minWidth: 'auto' }}
+                                                onClick={() => handleEdit(channelTitle, msg.id, msg.text)}
+                                            >
+                                                <EditIcon fontSize="small" />
+                                            </Button>
+                                            <Button
+                                                style={{ padding: '1px', minWidth: 'auto' }}
+                                                onClick={() => handleDelete(msg.id)}
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </Button>
+                                        </div>
                                         )}
                                     </div>
                                 </div>
@@ -175,7 +184,7 @@ export default function ChannelView({ cid }) {
                                 style={{
                                     fontSize: '12px',
                                     color: '#999',
-                                    marginTop: '5px',
+                                    marginTop: '2px',
                                     textAlign: msg.sender === userData?.username ? 'right' : 'left',
                                 }}
                             >
