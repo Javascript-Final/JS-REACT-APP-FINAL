@@ -4,15 +4,14 @@ import { getDatabase } from "firebase/database";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCL7KFVsZgTksUVfXJshIyQLBBtfm86Rts",
-  authDomain: "talk-and-text-app.firebaseapp.com",
-  projectId: "talk-and-text-app",
-  storageBucket: "talk-and-text-app.appspot.com",
-  messagingSenderId: "15861181337",
-  appId: "1:15861181337:web:d065632a2055873d9d8108",
-  databaseURL: "https://talk-and-text-app-default-rtdb.europe-west1.firebasedatabase.app/"
+  apiKey: "AIzaSyDcz2usbx4kvBBg0yS_kJ4iz9nEtnPFYXU",
+  authDomain: "higuys87.firebaseapp.com",
+  projectId: "higuys87",
+  storageBucket: "higuys87.firebasestorage.app",
+  messagingSenderId: "979864152189",
+  appId: "1:979864152189:web:f42bbad3a5ca9190ffe914",
+  databaseURL: "https://higuys87-default-rtdb.europe-west1.firebasedatabase.app/"
 };
-
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
